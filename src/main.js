@@ -256,7 +256,7 @@ function replayIntro() {
   if (introTl && !introDone) return;
   gsap.to(veil, { opacity: 1, duration: 0.3, onComplete: () => {
     if (active === LAST) gallery.select(0, { instant: true });
-    hideGroup(back[1]); setActive(-1);
+    setActive(-1);
     playIntro();
     gsap.to(veil, { opacity: 0, duration: 0.5, delay: 0.1 });
   } });
