@@ -1,0 +1,147 @@
+/* ------------------------------------------------------------------
+   Base : unité de scène, calques, positionnement par ancrage.
+   Format de référence des maquettes : 1280 × 1080 px.
+   --u = taille d'un « pixel de maquette » dans le viewport courant.
+   ------------------------------------------------------------------ */
+:root {
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Iosevka Charon', 'Arial Narrow', 'Roboto Condensed', sans-serif;
+
+  --u: min(calc(100vw / 1280), calc(100vh / 1080));
+  --oy: calc((100vh - 1080 * var(--u)) / 2); /* marge verticale quand la largeur limite */
+  --bg: var(--fond-marque);
+}
+@supports (height: 100svh) {
+  :root {
+    --u: min(calc(100vw / 1280), calc(100svh / 1080));
+    --oy: calc((100svh - 1080 * var(--u)) / 2);
+  }
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { background: var(--bg); color: var(--texte-principal); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: var(--font-ui);
+  color: var(--texte-principal);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body { overflow: hidden; height: 100vh; }
+h1, h2, h3, p { margin: 0; font-weight: inherit; }
+button { font: inherit; color: inherit; }
+a { color: inherit; }
+:focus-visible { outline: calc(2 * var(--u)) solid #fff; outline-offset: calc(3 * var(--u)); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Calques plein écran ---------- */
+#layer-back, #canvas-wrap, #layer-front, #site-header, #veil { position: fixed; inset: 0; }
+#layer-back  { z-index: 1; pointer-events: none; }
+#canvas-wrap { z-index: 2; pointer-events: none; }
+#layer-front { z-index: 3; pointer-events: none; }
+#site-header { z-index: 10; pointer-events: none; opacity: 0; }
+#veil        { z-index: 20; background: var(--bg); opacity: 0; pointer-events: none; }
+#gl { display: block; width: 100%; height: 100%; }
+
+.scr { position: absolute; inset: 0; visibility: hidden; }
+.scr.is-on { visibility: visible; }
+
+/* ---------- Positionnement par ancrage (coordonnées de maquette) ---------- */
+.pos[hidden] { display: none; }
+.pos { position: absolute; top: calc(var(--oy) + var(--y) * var(--u)); width: calc(var(--w) * var(--u)); }
+.pos[style*='--h'] { height: calc(var(--h) * var(--u)); }
+.pos[data-a='l'] { left: calc(var(--x) * var(--u)); }
+.pos[data-a='r'] { right: calc((1280 - var(--x) - var(--w)) * var(--u)); }
+.pos[data-a='c'] { left: calc(50% + (var(--x) - 640) * var(--u)); }
+
+.lh-96 { line-height: 0.96; }
+.lh-140 { line-height: 1.4; }
+.lh-155 { line-height: 1.55; }
+.lh-auto { line-height: normal; }
+.pos[style*='--lh'] { line-height: calc(var(--lh) * var(--u)); }
+.al-l { text-align: left; } .al-c { text-align: center; } .al-r { text-align: right; }
+.nowrap { white-space: nowrap; }
+.c-deep { color: var(--accent-heritage); }
+.pos { text-align: left; }
+.pos.al-c { text-align: center; } .pos.al-r { text-align: right; }
+
+/* Ombre douce portée par les grands mots (écrans 02-03) */
+.soft-shadow { filter: drop-shadow(0 calc(14 * var(--u)) calc(22 * var(--u)) rgba(8, 28, 78, 0.38)); }
+
+.rule { height: max(1px, calc(1 * var(--u))); background: var(--bordures-subtiles); transform-origin: left center; }
+.pos.rule[data-a='r'] { transform-origin: right center; }
+.pos.rule { text-align: initial; }
+
+/* ---------- En-tête ---------- */
+.logo { position: absolute; left: calc(48 * var(--u)); top: calc(var(--oy) + 42 * var(--u)); width: calc(76 * var(--u)); height: calc(43 * var(--u)); pointer-events: auto; }
+.logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+#site-header nav { position: absolute; right: calc(48 * var(--u)); top: calc(var(--oy) + 55 * var(--u)); display: flex; gap: calc(32 * var(--u)); pointer-events: auto; line-height: 1.2; }
+#site-header nav a { color: var(--texte-principal); text-decoration: none; padding-bottom: calc(2 * var(--u)); border-bottom: max(1px, calc(1 * var(--u))) solid transparent; transition: border-color 0.2s; }
+#site-header nav a:hover { border-bottom-color: #fff; }
+
+/* ---------- Compteur « 647 » + unité : l'unité est ancrée au coin haut-droit du nombre complet ---------- */
+.numwrap { text-align: center; }
+.num-box { position: relative; display: inline-block; }
+.num-ghost { display: block; visibility: hidden; }            /* réserve la largeur finale */
+.num-live { position: absolute; inset: 0; display: block; text-align: right; }
+.num-sup { position: absolute; left: 100%; top: calc(53 * var(--u)); margin-left: calc(27 * var(--u)); }
+
+/* ---------- Galerie ---------- */
+#layer-front .scr[data-s='10'] button { pointer-events: auto; cursor: pointer; }
+.gstate { display: none; }
+.gstate.is-on { display: block; }
+
+.hotspot {
+  position: absolute; left: 0; top: 0; padding: 0; margin: 0; border: 0; background: none;
+  transform: translate3d(var(--hx, 0px), var(--hy, 0px), 0);
+  transition: opacity 0.25s;
+}
+.hotspot.is-hidden { opacity: 0; pointer-events: none !important; }
+.hotspot { will-change: transform; }
+#g-hint { opacity: 0.8; }
+body.is-orbit { cursor: grab; touch-action: none; }
+body.is-orbit.is-dragging { cursor: grabbing; }
+body.is-orbit .hotspot, body.is-orbit .thumb, body.is-orbit .back-btn { cursor: pointer; }
+.hotspot .ring {
+  position: absolute; left: calc(-12 * var(--u)); top: calc(-12 * var(--u));
+  width: calc(24 * var(--u)); height: calc(24 * var(--u)); border-radius: 50%;
+  border: max(1px, calc(1.5 * var(--u))) solid #fff; background: rgba(255, 255, 255, 0.14);
+  transition: transform 0.2s, background 0.2s;
+}
+.hotspot .ring::after { content: ''; position: absolute; inset: 0; margin: auto; width: calc(5 * var(--u)); height: calc(5 * var(--u)); border-radius: 50%; background: #fff; }
+.hotspot:hover .ring { transform: scale(1.18); background: rgba(255, 255, 255, 0.28); }
+.hotspot .hs-label { position: absolute; left: calc(19 * var(--u)); top: calc(-8 * var(--u)); line-height: calc(16 * var(--u)); white-space: nowrap; text-align: left; }
+
+.ring-lg { border: max(1px, calc(1 * var(--u))) solid #fff; border-radius: 50%; position: absolute; }
+.ring-lg span { position: absolute; inset: 0; margin: auto; width: calc(6 * var(--u)); height: calc(6 * var(--u)); border-radius: 50%; background: #fff; }
+.hline { background: rgba(255, 255, 255, 0.85); }
+.back-btn { display: flex; align-items: center; gap: calc(10 * var(--u)); background: none; border: 0; padding: 0; line-height: calc(16 * var(--u)); text-align: left; }
+.back-btn svg { width: calc(10 * var(--u)); height: calc(10 * var(--u)); flex: none; }
+.back-btn:hover { text-decoration: underline; text-underline-offset: calc(3 * var(--u)); }
+
+#thumbs .thumb {
+  position: absolute; left: calc(var(--tx) * var(--u)); top: calc(var(--oy) + 858 * var(--u));
+  width: calc(160 * var(--u)); padding: 0; border: 0; background: none; text-align: center; display: block;
+}
+.thumb-img { position: relative; display: block; width: 100%; height: calc(90 * var(--u)); border-radius: calc(4 * var(--u)); overflow: hidden; }
+.thumb-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb-img::after { content: ''; position: absolute; inset: 0; border-radius: inherit; border: calc(2 * var(--u)) solid transparent; transition: border-color 0.25s; }
+.thumb[aria-selected='true'] .thumb-img::after { border-color: #fff; }
+.thumb-bar { display: block; margin-top: calc(10 * var(--u)); height: max(1px, calc(2 * var(--u))); background: var(--bordures-subtiles); transition: background 0.25s; }
+.thumb[aria-selected='true'] .thumb-bar { background: #fff; }
+.thumb-label { display: block; margin-top: calc(10 * var(--u)); line-height: calc(16 * var(--u)); }
+.thumb:hover .thumb-bar { background: rgba(255, 255, 255, 0.6); }
+
+/* ---------- Mode calibrage (?debug) ---------- */
+#ref-overlay { position: fixed; inset: 0; z-index: 30; pointer-events: none; background-position: center; background-repeat: no-repeat; background-size: calc(1280 * var(--u)) calc(1080 * var(--u)); opacity: 0; }
+

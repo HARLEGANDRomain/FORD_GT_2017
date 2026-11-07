@@ -1,0 +1,379 @@
+{
+  "fileName": "Car idea",
+  "textStyles": [
+    {
+      "name": "GT / Corps / M — Récit",
+      "fontFamily": "Inter",
+      "fontWeight": "Regular",
+      "fontSize": 17,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Corps / L — Récit",
+      "fontFamily": "Inter",
+      "fontWeight": "Regular",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Corps / S — Récit",
+      "fontFamily": "Inter",
+      "fontWeight": "Regular",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Corps / XL — Récit",
+      "fontFamily": "Inter",
+      "fontWeight": "Regular",
+      "fontSize": 19,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Corps / S — Introduction",
+      "fontFamily": "Inter",
+      "fontWeight": "Regular",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Repères / Dates",
+      "fontFamily": "Inter",
+      "fontWeight": "Bold",
+      "fontSize": 11,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 10
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Repères / Surtitre chapitre",
+      "fontFamily": "Inter",
+      "fontWeight": "Bold",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 12
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Repères / Surtitre introduction",
+      "fontFamily": "Inter",
+      "fontWeight": "Bold",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 12
+      },
+      "textCase": "UPPER"
+    },
+    {
+      "name": "GT / H3 / Édition",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 30,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Légendes / Petite",
+      "fontFamily": "Inter",
+      "fontWeight": "Regular",
+      "fontSize": 13,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Chiffres clés / L — Année finale",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 123,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Chiffres clés / M — Chronologie",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 58,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Chiffres clés / XXL — Anniversaire",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 214,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Chiffres clés / S — Motorisation",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 46,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Chiffres clés / Géant — Puissance",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 476,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Chiffres clés / XL — Production",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 144,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Chiffres clés / L — Année",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 126,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Chiffres clés / XXL — Héritage",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 220,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / H1 / Conclusion",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 125,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / H1 / Impact",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 149,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / H1 / Sur une ligne",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 84,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / H1 / Compact",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 122,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / H1 / Centré",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 108,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / H1 / Standard",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 134,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT/Interface/Navigation",
+      "fontFamily": "Inter",
+      "fontWeight": "Medium",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Interface / Bouton",
+      "fontFamily": "Inter",
+      "fontWeight": "Bold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / H2 / Intertitre",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 40,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -5
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Display / Marque — Concept",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 740,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -10
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Display / Modèle — Compact",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 96,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -10
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Display / Modèle — Cinématique",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 740,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -13
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / H4 / Accroche",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 28,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Marque / Monogramme",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Marque / Signature",
+      "fontFamily": "Iosevka Charon",
+      "fontWeight": "Bold",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 4
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "GT / Documentation / Source historique",
+      "fontFamily": "Inter",
+      "fontWeight": "Bold",
+      "fontSize": 32,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 12
+      },
+      "textCase": "UPPER"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+/* GÉNÉRÉ par scripts/build-tokens.mjs — ne pas éditer à la main. */
+:root {
+  /* Primitives */
+  --c-bleus-principal: #3366b4; /* Bleu principal des écrans de présentation. */
+  --c-bleus-profond: #204579; /* Grands chiffres et éléments décoratifs en arrière-plan. */
+  --c-neutres-blanc-80: #ffffff; /* surcharge (JSON : rgba(255, 255, 255, 0.8)) */
+  --c-neutres-blanc-25: rgba(255, 255, 255, 0.251); /* Séparateurs blancs transparents à environ 25 %. */
+  --c-neutres-blanc: #ffffff; /* Titres, textes principaux et éléments de marque sur fond bleu ou sombre. */
+  --c-neutres-noir-cinema: #090909; /* Fond noir des séquences de révélation. */
+  --c-neutres-noir: #000000; /* Texte sur fond clair, notamment les documents sources. */
+
+  /* Sémantiques */
+  --fond-marque: var(--c-bleus-principal); /* Bleu principal des écrans de présentation. */
+  --fond-cinema: var(--c-neutres-noir-cinema); /* Fond noir des séquences de révélation. */
+  --texte-secondaire: var(--c-neutres-blanc-80); /* Textes secondaires et repères blancs à 80 %. */
+  --texte-principal: var(--c-neutres-blanc); /* Titres, textes principaux et éléments de marque sur fond bleu ou sombre. */
+  --texte-sur-clair: var(--c-neutres-noir); /* Texte sur fond clair, notamment les documents sources. */
+  --bordures-subtiles: var(--c-neutres-blanc-25); /* Séparateurs blancs transparents à environ 25 %. */
+  --accent-heritage: var(--c-bleus-profond); /* Grands chiffres et éléments décoratifs en arrière-plan. */
+}
+
+/* Styles de texte (taille exprimée en unité de scène --u, voir base.css) */
+.ts-gt-corps-m-recit { font-family: var(--font-ui); font-weight: 400; font-size: calc(17 * var(--u)); letter-spacing: 0em; } /* GT / Corps / M — Récit */
+.ts-gt-corps-l-recit { font-family: var(--font-ui); font-weight: 400; font-size: calc(18 * var(--u)); letter-spacing: 0em; } /* GT / Corps / L — Récit */
+.ts-gt-corps-s-recit { font-family: var(--font-ui); font-weight: 400; font-size: calc(16 * var(--u)); letter-spacing: 0em; } /* GT / Corps / S — Récit */
+.ts-gt-corps-xl-recit { font-family: var(--font-ui); font-weight: 400; font-size: calc(19 * var(--u)); letter-spacing: 0em; } /* GT / Corps / XL — Récit */
+.ts-gt-corps-s-introduction { font-family: var(--font-ui); font-weight: 400; font-size: calc(16 * var(--u)); letter-spacing: 0em; } /* GT / Corps / S — Introduction */
+.ts-gt-reperes-dates { font-family: var(--font-ui); font-weight: 700; font-size: calc(11 * var(--u)); letter-spacing: 0.1em; } /* GT / Repères / Dates */
+.ts-gt-reperes-surtitre-chapitre { font-family: var(--font-ui); font-weight: 700; font-size: calc(12 * var(--u)); letter-spacing: 0.12em; } /* GT / Repères / Surtitre chapitre */
+.ts-gt-reperes-surtitre-introduction { font-family: var(--font-ui); font-weight: 700; font-size: calc(12 * var(--u)); letter-spacing: 0.12em; text-transform: uppercase; } /* GT / Repères / Surtitre introduction */
+.ts-gt-h3-edition { font-family: var(--font-display); font-weight: 700; font-size: calc(30 * var(--u)); letter-spacing: 0em; } /* GT / H3 / Édition */
+.ts-gt-legendes-petite { font-family: var(--font-ui); font-weight: 400; font-size: calc(13 * var(--u)); letter-spacing: 0em; } /* GT / Légendes / Petite */
+.ts-gt-chiffres-cles-l-annee-finale { font-family: var(--font-display); font-weight: 700; font-size: calc(123 * var(--u)); letter-spacing: -0.05em; } /* GT / Chiffres clés / L — Année finale */
+.ts-gt-chiffres-cles-m-chronologie { font-family: var(--font-display); font-weight: 700; font-size: calc(58 * var(--u)); letter-spacing: -0.05em; } /* GT / Chiffres clés / M — Chronologie */
+.ts-gt-chiffres-cles-xxl-anniversaire { font-family: var(--font-display); font-weight: 700; font-size: calc(214 * var(--u)); letter-spacing: -0.05em; } /* GT / Chiffres clés / XXL — Anniversaire */
+.ts-gt-chiffres-cles-s-motorisation { font-family: var(--font-display); font-weight: 700; font-size: calc(46 * var(--u)); letter-spacing: -0.05em; } /* GT / Chiffres clés / S — Motorisation */
+.ts-gt-chiffres-cles-geant-puissance { font-family: var(--font-display); font-weight: 700; font-size: calc(476 * var(--u)); letter-spacing: -0.05em; } /* GT / Chiffres clés / Géant — Puissance */
+.ts-gt-chiffres-cles-xl-production { font-family: var(--font-display); font-weight: 700; font-size: calc(144 * var(--u)); letter-spacing: -0.05em; } /* GT / Chiffres clés / XL — Production */
+.ts-gt-chiffres-cles-l-annee { font-family: var(--font-display); font-weight: 700; font-size: calc(126 * var(--u)); letter-spacing: -0.05em; } /* GT / Chiffres clés / L — Année */
+.ts-gt-chiffres-cles-xxl-heritage { font-family: var(--font-display); font-weight: 700; font-size: calc(220 * var(--u)); letter-spacing: -0.05em; } /* GT / Chiffres clés / XXL — Héritage */
+.ts-gt-h1-conclusion { font-family: var(--font-display); font-weight: 700; font-size: calc(125 * var(--u)); letter-spacing: -0.05em; } /* GT / H1 / Conclusion */
+.ts-gt-h1-impact { font-family: var(--font-display); font-weight: 700; font-size: calc(149 * var(--u)); letter-spacing: -0.05em; } /* GT / H1 / Impact */
+.ts-gt-h1-sur-une-ligne { font-family: var(--font-display); font-weight: 700; font-size: calc(84 * var(--u)); letter-spacing: -0.05em; } /* GT / H1 / Sur une ligne */
+.ts-gt-h1-compact { font-family: var(--font-display); font-weight: 700; font-size: calc(122 * var(--u)); letter-spacing: -0.05em; } /* GT / H1 / Compact */
+.ts-gt-h1-centre { font-family: var(--font-display); font-weight: 700; font-size: calc(108 * var(--u)); letter-spacing: -0.05em; } /* GT / H1 / Centré */
+.ts-gt-h1-standard { font-family: var(--font-display); font-weight: 700; font-size: calc(134 * var(--u)); letter-spacing: -0.05em; } /* GT / H1 / Standard */
+.ts-gt-interface-navigation { font-family: var(--font-ui); font-weight: 500; font-size: calc(14 * var(--u)); letter-spacing: 0em; } /* GT/Interface/Navigation */
+.ts-gt-interface-bouton { font-family: var(--font-ui); font-weight: 700; font-size: calc(16 * var(--u)); letter-spacing: 0em; } /* GT / Interface / Bouton */
+.ts-gt-h2-intertitre { font-family: var(--font-display); font-weight: 700; font-size: calc(40 * var(--u)); letter-spacing: -0.05em; } /* GT / H2 / Intertitre */
+.ts-gt-display-marque-concept { font-family: var(--font-display); font-weight: 700; font-size: calc(740 * var(--u)); letter-spacing: -0.1em; } /* GT / Display / Marque — Concept */
+.ts-gt-display-modele-compact { font-family: var(--font-display); font-weight: 700; font-size: calc(96 * var(--u)); letter-spacing: -0.1em; } /* GT / Display / Modèle — Compact */
+.ts-gt-display-modele-cinematique { font-family: var(--font-display); font-weight: 700; font-size: calc(740 * var(--u)); letter-spacing: -0.13em; } /* GT / Display / Modèle — Cinématique */
+.ts-gt-h4-accroche { font-family: var(--font-display); font-weight: 700; font-size: calc(28 * var(--u)); letter-spacing: 0em; } /* GT / H4 / Accroche */
+.ts-gt-marque-monogramme { font-family: var(--font-display); font-weight: 700; font-size: calc(16 * var(--u)); letter-spacing: 0em; } /* GT / Marque / Monogramme */
+.ts-gt-marque-signature { font-family: var(--font-display); font-weight: 700; font-size: calc(18 * var(--u)); letter-spacing: 0.04em; } /* GT / Marque / Signature */
+.ts-gt-documentation-source-historique { font-family: var(--font-ui); font-weight: 700; font-size: calc(32 * var(--u)); letter-spacing: 0.12em; text-transform: uppercase; } /* GT / Documentation / Source historique */

@@ -1,0 +1,156 @@
+[
+  {
+    "GT — Couleurs primitives": {
+      "modes": {
+        "Original": {
+          "Bleus": {
+            "Principal": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Bleu principal des écrans de présentation.",
+              "$type": "color",
+              "$value": "#3366b4"
+            },
+            "Profond": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Grands chiffres et éléments décoratifs en arrière-plan.",
+              "$type": "color",
+              "$value": "#204579"
+            }
+          },
+          "Neutres": {
+            "Blanc-80": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Textes secondaires et repères blancs à 80 %.",
+              "$type": "color",
+              "$value": "rgba(255, 255, 255, 0.8)"
+            },
+            "Blanc-25": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Séparateurs blancs transparents à environ 25 %.",
+              "$type": "color",
+              "$value": "rgba(255, 255, 255, 0.251)"
+            },
+            "Blanc": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Titres, textes principaux et éléments de marque sur fond bleu ou sombre.",
+              "$type": "color",
+              "$value": "#ffffff"
+            },
+            "Noir-cinema": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Fond noir des séquences de révélation.",
+              "$type": "color",
+              "$value": "#090909"
+            },
+            "Noir": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Texte sur fond clair, notamment les documents sources.",
+              "$type": "color",
+              "$value": "#000000"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "GT — Couleurs sémantiques": {
+      "modes": {
+        "Présentation": {
+          "Fond": {
+            "Marque": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Bleu principal des écrans de présentation.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "GT — Couleurs primitives",
+              "$value": "{Bleus.Principal}"
+            },
+            "Cinema": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Fond noir des séquences de révélation.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "GT — Couleurs primitives",
+              "$value": "{Neutres.Noir-cinema}"
+            }
+          },
+          "Texte": {
+            "Secondaire": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Textes secondaires et repères blancs à 80 %.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "GT — Couleurs primitives",
+              "$value": "{Neutres.Blanc-80}"
+            },
+            "Principal": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Titres, textes principaux et éléments de marque sur fond bleu ou sombre.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "GT — Couleurs primitives",
+              "$value": "{Neutres.Blanc}"
+            },
+            "Sur-clair": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Texte sur fond clair, notamment les documents sources.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "GT — Couleurs primitives",
+              "$value": "{Neutres.Noir}"
+            }
+          },
+          "Bordures": {
+            "Subtiles": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Séparateurs blancs transparents à environ 25 %.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "GT — Couleurs primitives",
+              "$value": "{Neutres.Blanc-25}"
+            }
+          },
+          "Accent": {
+            "Heritage": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$description": "Grands chiffres et éléments décoratifs en arrière-plan.",
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "GT — Couleurs primitives",
+              "$value": "{Bleus.Profond}"
+            }
+          }
+        }
+      }
+    }
+  }
+]

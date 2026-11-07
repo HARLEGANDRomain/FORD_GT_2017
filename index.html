@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ford GT 2017 — L’histoire d’une légende</title>
+  <meta name="description" content="Une traversée en 12 écrans de l’histoire de la Ford GT 2017 : de la GT40 victorieuse au Mans à la dernière LM Edition, avec un modèle 3D explorable." />
+  <meta name="theme-color" content="#3366b4" />
+  <link rel="preload" href="./models/ford-gt.glb" as="fetch" crossorigin />
+  <link rel="icon" href="./img/ford-logo.png" />
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body class="is-loading">
+  <h1 class="sr-only">Ford GT 2017 — l’histoire d’une légende</h1>
+
+  <!-- ===================== CALQUE ARRIÈRE : grands mots derrière la voiture ===================== -->
+  <div id="layer-back" aria-hidden="true">
+    <div class="scr" data-s="2">
+      <div class="pos ts-gt-display-modele-cinematique lh-auto al-c nowrap soft-shadow" data-a="c" data-mo="poster" style="--x:44;--y:9;--w:1192">FORD</div>
+    </div>
+    <div class="scr" data-s="3">
+      <div class="pos ts-gt-display-modele-cinematique lh-auto al-c nowrap soft-shadow" data-a="c" data-mo="poster" style="--x:44;--y:9;--w:1192">2017</div>
+    </div>
+    <div class="scr" data-s="4">
+      <div class="pos ts-gt-chiffres-cles-xxl-heritage lh-96 al-r nowrap c-deep" data-a="r" data-mo="poster" style="--x:667;--y:361;--w:566">GT40</div>
+    </div>
+    <div class="scr" data-s="5">
+      <div class="pos ts-gt-chiffres-cles-l-annee lh-96 al-r nowrap c-deep" data-a="l" data-mo="poster" style="--x:11;--y:443;--w:286">2015</div>
+    </div>
+    <div class="scr" data-s="7">
+      <div class="pos numwrap" data-a="c" style="--x:167;--y:276;--w:949">
+        <span class="num-box">
+          <span class="num-ghost ts-gt-chiffres-cles-geant-puissance lh-96 nowrap" aria-hidden="true">647</span>
+          <span class="num-live ts-gt-chiffres-cles-geant-puissance lh-96 nowrap" data-mo="num" data-count="647">647</span>
+          <span class="num-sup ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-mo="label">CHEVAUX</span>
+        </span>
+      </div>
+    </div>
+    <div class="scr" data-s="8">
+      <div class="pos ts-gt-chiffres-cles-xxl-anniversaire lh-96 nowrap c-deep" data-a="l" data-mo="num" data-count="50" style="--x:48;--y:530;--w:407">50</div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap c-deep" data-a="l" data-mo="label" style="--x:48;--y:755;--w:407">ANS APRÈS 1966</div>
+    </div>
+    <div class="scr" data-s="9">
+      <div class="pos ts-gt-h1-conclusion lh-96 nowrap" data-a="l" data-mo="poster" style="--x:44;--y:185;--w:848">L’HISTOIRE<br />CONTINUE.</div>
+    </div>
+  </div>
+
+  <!-- ===================== CANVAS 3D ===================== -->
+  <div id="canvas-wrap"><canvas id="gl" aria-hidden="true"></canvas></div>
+
+  <!-- ===================== CALQUE AVANT : textes, repères, galerie ===================== -->
+  <main id="layer-front">
+    <!-- 01 — Introduction : phares seuls (visuel 2D, sert aussi d’écran d’attente) -->
+    <section class="scr" data-s="1" aria-label="Introduction">
+    </section>
+
+    <!-- 02 — Modèle -->
+    <section class="scr" data-s="2" aria-label="La Ford GT"></section>
+
+    <!-- 03 — Modèle et description -->
+    <section class="scr" data-s="3" aria-label="La Ford GT, nouvelle génération">
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 al-c" data-a="c" data-mo="label" style="--x:564.5;--y:906;--w:151">FORD GT</div>
+      <h2 class="pos ts-gt-h4-accroche al-c" data-a="c" data-mo="poster" style="--x:250;--y:933;--w:780;--lh:34">L’héritage de la course. Une nouvelle génération</h2>
+      <p class="pos ts-gt-corps-s-introduction lh-155 al-c" data-a="c" data-mo="para" style="--x:250;--y:979;--w:780;--lh:24">Dévoilée en 2015 et commercialisée en 2017, la Ford GT réinterprète une lignée née pour la compétition.</p>
+    </section>
+
+    <!-- 04 — La course en héritage -->
+    <section class="scr" data-s="4" aria-labelledby="t4">
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:700">L’HÉRITAGE / DE LA GT40 À LA FORD GT</div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 al-r" data-a="r" data-mo="label" style="--x:1000;--y:139;--w:232">LE MANS<br />1966 — 1969</div>
+      <h2 id="t4" class="pos ts-gt-h1-standard lh-96 nowrap" data-a="l" data-mo="poster" style="--x:42;--y:181;--w:900">LA COURSE<br />EN HÉRITAGE.</h2>
+      <div class="pos rule" data-a="c" data-mo="rule" style="--x:48;--y:883;--w:1184"></div>
+      <div class="pos ts-gt-h2-intertitre lh-96 nowrap" data-a="c" data-mo="poster" style="--x:48;--y:926;--w:405">GT40 → FORD GT</div>
+      <p class="pos ts-gt-corps-l-recit lh-155" data-a="c" data-mo="para" style="--x:453;--y:903;--w:780">De 1966 à 1969, les GT40 s’imposent aux 24 Heures du Mans. La Ford GT de 2017 appartient à une autre génération : elle prolonge cet héritage de compétition, avec une silhouette et une ambition résolument contemporaines.</p>
+    </section>
+
+    <!-- 05 — Une nouvelle ère -->
+    <section class="scr" data-s="5" aria-labelledby="t5">
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:700">LA CONCEPTION / LA RÉVÉLATION</div>
+      <h2 id="t5" class="pos ts-gt-h1-centre lh-96 al-c nowrap" data-a="c" data-mo="poster" style="--x:178;--y:188;--w:925">DESSINÉE POUR<br />UNE NOUVELLE ÈRE.</h2>
+      <div class="pos rule" data-a="c" data-mo="rule" style="--x:48;--y:883;--w:1184"></div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="c" data-mo="label" style="--x:48;--y:905;--w:351">DÉTROIT → GENÈVE</div>
+      <p class="pos ts-gt-corps-m-recit lh-155" data-a="c" data-mo="para" style="--x:48;--y:936;--w:351">Janvier 2015 : révélation à Détroit. La même année, la GT se présente à Genève.</p>
+      <p class="pos ts-gt-corps-xl-recit lh-155" data-a="c" data-mo="para" style="--x:453;--y:903;--w:780">La seconde génération de Ford GT fait entrer la lignée dans une nouvelle époque. Sa silhouette basse et sculptée exprime l’ambition d’une sportive de route héritière de la compétition. Le nom demeure ; l’interprétation change.</p>
+    </section>
+
+    <!-- 06 — Rare par nature -->
+    <section class="scr" data-s="6" aria-labelledby="t6">
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:450">LA FABRICATION</div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 al-c nowrap" data-a="c" data-mo="label" style="--x:330;--y:139;--w:620">MARKHAM, ONTARIO / CANADA</div>
+      <h2 id="t6" class="pos ts-gt-h1-compact lh-96 al-r nowrap" data-a="r" data-mo="poster" style="--x:626;--y:214;--w:606">RARE.<br />PAR NATURE.</h2>
+      <p class="pos ts-gt-corps-m-recit lh-155 al-r" data-a="r" data-mo="para" style="--x:879;--y:523;--w:354">À Markham, la production débute en 2016. Le rythme annoncé est de 250 voitures par an, pour une série d’abord limitée à 1 000 unités. La rareté fait partie de son histoire.</p>
+      <div class="pos rule" data-a="c" data-mo="rule" style="--x:48;--y:883;--w:1184"></div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="c" data-mo="label" style="--x:48;--y:931.5;--w:340">EXEMPLAIRES AU TOTAL<br />2016 — 2022</div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="c" data-mo="label" style="--x:542;--y:903;--w:691">OCTOBRE 2018 / 350 DE PLUS</div>
+      <p class="pos ts-gt-corps-l-recit lh-155" data-a="c" data-mo="para" style="--x:542;--y:938;--w:691">Face à une très forte demande, Ford annonce 350 exemplaires supplémentaires. Produits entre 2020 et 2022, ils portent le total à 1 350 Ford GT.</p>
+    </section>
+
+    <!-- 07 — De la vision à la route -->
+    <section class="scr" data-s="7" aria-labelledby="t7">
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:700">LE PRODUIT FINAL / ÉTÉ 2017</div>
+      <h2 id="t7" class="pos ts-gt-h1-sur-une-ligne lh-96 nowrap" data-a="l" data-mo="poster" style="--x:48;--y:179;--w:1184">DE LA VISION À LA ROUTE.</h2>
+      <div class="pos rule" data-a="l" data-mo="rule" style="--x:48;--y:883;--w:208"></div>
+      <div class="pos ts-gt-chiffres-cles-s-motorisation lh-96 nowrap" data-a="l" data-mo="poster" style="--x:48;--y:908;--w:216">V6 3,5 L</div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:968;--w:216">BITURBO</div>
+      <div class="pos rule" data-a="r" data-mo="rule" style="--x:1024;--y:883;--w:208"></div>
+      <div class="pos ts-gt-chiffres-cles-s-motorisation lh-96 nowrap" data-a="r" data-mo="num" data-count="3.4" data-dec="1" data-suffix=" S" style="--x:1024;--y:908;--w:208">3,4 S</div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="r" data-mo="label" style="--x:1024;--y:968;--w:208">0 À 100 KM/H</div>
+      <p class="pos ts-gt-corps-s-recit lh-155 al-c" data-a="c" data-mo="para" style="--x:329;--y:988;--w:622">Commercialisée à partir de l’été 2017, la Ford GT donne une réalité routière à la vision révélée deux ans plus tôt.</p>
+    </section>
+
+    <!-- 08 — Le Mans encore -->
+    <section class="scr" data-s="8" aria-labelledby="t8">
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:700">ENTRE ROUTE ET COMPÉTITION</div>
+      <h2 id="t8" class="sr-only">Le Mans encore.</h2>
+      <div class="pos ts-gt-h1-impact lh-96 nowrap" data-a="l" data-mo="poster" aria-hidden="true" style="--x:43;--y:185;--w:433">LE<br />MANS.</div>
+      <div class="pos ts-gt-h1-impact lh-96 nowrap" data-a="r" data-mo="poster" aria-hidden="true" style="--x:780;--y:194;--w:452">ENCORE.</div>
+      <div class="pos ts-gt-chiffres-cles-m-chronologie lh-96 al-r nowrap" data-a="r" data-mo="poster" style="--x:825;--y:706;--w:407">1966 → 2016</div>
+      <p class="pos ts-gt-corps-l-recit lh-155 al-r" data-a="r" data-mo="para" style="--x:897;--y:813;--w:335">En 2016, la Ford GT de course renoue avec la victoire aux 24 Heures du Mans, cinquante ans après 1966. Un chapitre sportif distinct de celui de la GT de route : ce n’est pas cette dernière qui remporte le classement général.</p>
+    </section>
+
+    <!-- 09 — L’histoire continue -->
+    <section class="scr" data-s="9" aria-labelledby="t9">
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:700">LE DERNIER CHAPITRE</div>
+      <h2 id="t9" class="sr-only">L’histoire continue.</h2>
+      <div class="pos ts-gt-chiffres-cles-l-annee-finale lh-96 al-r nowrap" data-a="r" data-mo="poster" style="--x:942;--y:191;--w:290">2022</div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 al-r nowrap" data-a="r" data-mo="label" style="--x:942;--y:332;--w:290">FIN DE PRODUCTION</div>
+
+      <div class="pos rule" data-a="c" data-mo="rule" style="--x:48;--y:830;--w:278"></div>
+      <div class="pos ts-gt-reperes-dates lh-auto nowrap" data-a="c" data-mo="label" style="--x:48;--y:840;--w:81">2016 — 2017</div>
+      <div class="pos ts-gt-h3-edition lh-auto nowrap" data-a="c" data-mo="poster" style="--x:48;--y:863;--w:230">Heritage</div>
+      <div class="pos ts-gt-legendes-petite lh-auto nowrap" data-a="c" data-mo="para" style="--x:48;--y:911;--w:278">Les hommages ’66 et ’67</div>
+
+      <div class="pos rule" data-a="c" data-mo="rule" style="--x:350;--y:830;--w:278"></div>
+      <div class="pos ts-gt-reperes-dates lh-auto nowrap" data-a="c" data-mo="label" style="--x:350;--y:840;--w:81">2018</div>
+      <div class="pos ts-gt-h3-edition lh-auto nowrap" data-a="c" data-mo="poster" style="--x:350;--y:863;--w:230">Carbon</div>
+      <div class="pos ts-gt-legendes-petite lh-auto nowrap" data-a="c" data-mo="para" style="--x:350;--y:911;--w:278">Une nouvelle série spéciale</div>
+
+      <div class="pos rule" data-a="c" data-mo="rule" style="--x:652;--y:830;--w:278"></div>
+      <div class="pos ts-gt-reperes-dates lh-auto nowrap" data-a="c" data-mo="label" style="--x:652;--y:840;--w:81">2020</div>
+      <div class="pos ts-gt-h3-edition lh-auto nowrap" data-a="c" data-mo="poster" style="--x:652;--y:863;--w:230">Liquid Carbon</div>
+      <div class="pos ts-gt-legendes-petite lh-auto nowrap" data-a="c" data-mo="para" style="--x:652;--y:911;--w:278">Un autre chapitre de la GT</div>
+
+      <div class="pos rule" data-a="c" data-mo="rule" style="--x:954;--y:830;--w:278"></div>
+      <div class="pos ts-gt-reperes-dates lh-auto nowrap" data-a="c" data-mo="label" style="--x:954;--y:840;--w:81">2022</div>
+      <div class="pos ts-gt-h3-edition lh-auto nowrap" data-a="c" data-mo="poster" style="--x:954;--y:863;--w:230">LM Edition</div>
+      <div class="pos ts-gt-legendes-petite lh-auto nowrap" data-a="c" data-mo="para" style="--x:954;--y:911;--w:278">L’ultime série : 20 exemplaires</div>
+
+      <p class="pos ts-gt-corps-m-recit lh-155" data-a="c" data-mo="para" style="--x:48;--y:972;--w:1184">En 2022, la production s’achève avec la GT LM Edition : 20 exemplaires en hommage aux voitures victorieuses du Mans 2016. Des séries spéciales à la collection, la Ford GT devient à son tour un héritage à transmettre.</p>
+    </section>
+
+    <!-- 10 / 11 / 12 — Galerie (un seul écran de défilement, trois états pilotés par les miniatures) -->
+    <section class="scr" data-s="10" aria-label="Galerie">
+      <div id="g-eyebrow-default" class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:700">GALERIE</div>
+      <div id="g-eyebrow-detail" class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:700" hidden>GALERIE / DÉTAIL</div>
+      <h2 class="pos ts-gt-h2-intertitre lh-96 nowrap" data-a="l" data-mo="poster" style="--x:48;--y:163;--w:900">SOUS TOUS LES ANGLES.</h2>
+
+      <!-- Repères 3D : générés par gallery.js (position projetée à chaque image, visibles selon l'orientation de la caméra) -->
+      <div class="gstate" data-g="free"></div>
+      <div class="gstate" data-g="detail">
+        <div class="pos ring-lg" data-a="c" style="--x:342;--y:472;--w:76;--h:76"><span></span></div>
+        <div class="pos hline" data-a="c" style="--x:418;--y:509.5;--w:282;--h:1"></div>
+        <div class="card">
+          <div class="pos rule" data-a="c" style="--x:720;--y:272;--w:512"></div>
+          <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="c" style="--x:720;--y:303;--w:512">POINT D’INTÉRÊT</div>
+          <h3 class="pos ts-gt-h3-edition lh-auto" data-a="c" style="--x:720;--y:340;--w:512;--lh:38">Roue &amp; Frein<br />Avant</h3>
+          <div class="pos rule" data-a="c" style="--x:720;--y:434;--w:512"></div>
+          <p class="pos ts-gt-corps-s-recit lh-155" data-a="c" style="--x:720;--y:457;--w:512">Les branches sombres de la jante dévoilent le disque de frein et son étrier doré. Un jeu de contrastes qui souligne le dessin de la roue avant.</p>
+          <div class="pos rule" data-a="c" style="--x:720;--y:572;--w:512"></div>
+          <button class="pos back-btn ts-gt-legendes-petite" data-a="c" data-g-go="0" style="--x:720;--y:594;--w:140">
+            <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M9 5H1M4.5 1.5 1 5l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+            Vue d’ensemble
+          </button>
+          <div class="pos rule" data-a="c" style="--x:720;--y:640;--w:512"></div>
+        </div>
+      </div>
+
+      <p id="g-hint" class="pos ts-gt-legendes-petite al-r nowrap" data-a="r" data-mo="fade" style="--x:732;--y:866;--w:500">Glisser pour tourner · Ctrl + molette pour zoomer</p>
+
+      <!-- Bande de miniatures -->
+      <div class="pos rule" data-a="l" data-mo="rule" style="--x:48;--y:840;--w:1184"></div>
+      <div id="thumbs" data-mo="fade" role="tablist" aria-label="Angles de vue">
+        <button class="thumb" role="tab" data-g-go="0" aria-selected="true"  style="--tx:48"><span class="thumb-img"><img alt="" /></span><span class="thumb-bar"></span><span class="thumb-label ts-gt-legendes-petite">Avant</span></button>
+        <button class="thumb" role="tab" data-g-go="1" aria-selected="false" style="--tx:232"><span class="thumb-img"><img alt="" /></span><span class="thumb-bar"></span><span class="thumb-label ts-gt-legendes-petite">Profil</span></button>
+        <button class="thumb" role="tab" data-g-go="2" aria-selected="false" style="--tx:416"><span class="thumb-img"><img alt="" /></span><span class="thumb-bar"></span><span class="thumb-label ts-gt-legendes-petite">Arrière</span></button>
+        <button class="thumb" role="tab" data-g-go="3" aria-selected="false" style="--tx:600"><span class="thumb-img"><img alt="" /></span><span class="thumb-bar"></span><span class="thumb-label ts-gt-legendes-petite">Détails</span></button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== EN-TÊTE (écrans 02 → 12) ===================== -->
+  <header id="site-header">
+    <a class="logo" href="#intro" aria-label="Ford — retour au début"><img src="./img/ford-logo.png" alt="Ford" /></a>
+    <nav aria-label="Navigation principale">
+      <a class="ts-gt-interface-navigation" href="#histoire">Histoire</a>
+      <a class="ts-gt-interface-navigation" href="#performances">Performances</a>
+      <a class="ts-gt-interface-navigation" href="#galerie">Galerie</a>
+    </nav>
+  </header>
+
+  <div id="veil" aria-hidden="true"></div>
+  <noscript><p style="position:fixed;inset:0;display:grid;place-items:center;color:#fff;background:#3366b4;font-family:sans-serif">Ce site nécessite JavaScript et WebGL.</p></noscript>
+</body>
+</html>
