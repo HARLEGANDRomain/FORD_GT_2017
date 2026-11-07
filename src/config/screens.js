@@ -95,6 +95,9 @@ export const MOTION = {
   ease: 'power3.inOut',
   textAt: 0.8,               // le texte démarre quand la transition est à 80 % (caméra qui finit de freiner)
   veilIn: 0.3, veilOut: 0.45, // fondu pour les sauts lointains (ancres du menu)
+  // Défilement libre : sensibilité de la molette, lissage, seuils d'affichage du texte,
+  // dwell = durée (s) pendant laquelle la molette est ignorée quand la caméra atteint un écran ; rearm = distance à parcourir avant qu'un écran bloque à nouveau
+  free: { sens: 1 / 800, ease: 7, easeIn: 5, textIn: 0.18, textOut: 0.3, dwell: 1, rearm: 0.3 },
   intro: {
     dark: 0.8,               // noir complet avant l'allumage des phares
     lights: 2.4,             // phares seuls, avant l'éclair

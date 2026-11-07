@@ -81,7 +81,12 @@ const LOOK_DONE = { lights: 0, dark: 1, bg: 1, hdr: 1, push: 1, idle: 1 };
 // ---------- Navigation par phases (pas de défilement natif : un geste = une phase, transition fluide) ----------
 const MIN_PHASE = 2;                       // 0-1-2 = intro automatique ; on ne remonte pas dans l'intro
 let s = 0;                                 // position continue (phase en cours de transition)
-let phase = 0, busy = false, introDone = false, introTl = null, glide = null;
+let phase = 0, busy = false, introDone = false, introTl = null, glide = null, glideFar = false;
+
+// Défilement libre (mode par défaut) : la molette pilote la position continue, sans phases ni ancres.
+// Le clic, les flèches et le menu restent des sauts animés de phase en phase.
+const FREE = new URLSearchParams(location.search).get('scroll') !== 'phases';   // ?scroll=phases : ancien mode, un geste = une phase (debug)
+let freeT = 0, freeM = 0, freeLock = 0, freeLocked = -1, freeLast = 0, freeFresh = false, freePrev = 0;                             // position visée (s la rejoint en douceur)
 
 const camBase = (v) => {
   const n = Math.min(Math.floor(v), LAST);
@@ -118,15 +123,16 @@ function go(i) {
   glide?.kill();
   setActive(-1);
   const far = Math.abs(i - phase) > 1;
+  glideFar = far;
   const from = phase;
   phase = i;
   busy = true;
-  if (reduce) { s = i; busy = false; setActive(i); return; }
+  if (reduce) { s = freeT = i; busy = false; setActive(i); return; }
 
   if (far) {
     glide = gsap.timeline({ onComplete: () => { busy = false; } })
       .to(veil, { opacity: 1, duration: MOTION.veilIn, ease: 'power1.in' })
-      .add(() => { if (from === LAST) gallery.select(0, { instant: true }); s = i; })
+      .add(() => { if (from === LAST) gallery.select(0, { instant: true }); s = freeT = i; freeLocked = i; })
       .to(veil, { opacity: 0, duration: MOTION.veilOut, ease: 'power1.out' }, '+=0.08')
       .add(() => setActive(i), '-=0.25');
     return;
@@ -139,7 +145,7 @@ function go(i) {
       s = o.v;
       if (!shown && this.progress() > MOTION.textAt) { shown = true; setActive(i); }
     },
-    onComplete() { s = i; busy = false; if (!shown) setActive(i); },
+    onComplete() { s = freeT = i; freeLocked = i; busy = false; if (!shown) setActive(i); },
   });
 }
 const step = (d) => { if (!introDone || busy) return; go(phase + d); };
@@ -154,15 +160,36 @@ window.addEventListener('wheel', (e) => {
   if (!introDone) { skipIntro(); return; }
   // Galerie en caméra libre : Ctrl + molette (ou pincement du pavé tactile) zoome ; la molette seule reste la navigation entre phases
   if (active === LAST && gallery.canOrbit && e.ctrlKey) { e.preventDefault(); gallery.zoomBy(e.deltaY); return; }
+  if (FREE) {
+    if (busy && glideFar) return;                          // fondu d'un saut lointain : on attend
+    if (busy) { glide?.kill(); busy = false; setActive(-1); }  // un geste de molette reprend la main sur un saut animé
+    const t = performance.now(), gap = t - freeLast;
+    freeLast = t;
+    if (t < freeLock) return;                              // arrêt sur l'écran : la molette est ignorée
+    if (freeFresh) { if (gap < 140) return; freeFresh = false; }  // l'inertie d'un pavé tactile ne repart pas toute seule : il faut un nouveau geste
+    const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+    freeT = clamp(freeT + dy * MOTION.free.sens, MIN_PHASE, LAST);
+    return;
+  }
   if (used || busy) return;
   acc += e.deltaY;
   if (Math.abs(acc) > 40) { used = true; step(Math.sign(acc)); }
 }, { passive: false });
 
 let touchY = null;
-window.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+let touchPrev = 0;
+window.addEventListener('touchstart', (e) => { touchY = touchPrev = e.touches[0].clientY; }, { passive: true });
+window.addEventListener('touchmove', (e) => {
+  if (!FREE || !introDone || sourcesOpen || touchY === null || (busy && glideFar) || active === LAST && gallery.canOrbit) return;
+  if (performance.now() < freeLock) { touchPrev = e.touches[0].clientY; return; }
+  if (busy) { glide?.kill(); busy = false; setActive(-1); }
+  const y = e.touches[0].clientY;
+  freeT = clamp(freeT + (touchPrev - y) / (window.innerHeight * 0.7), MIN_PHASE, LAST);
+  touchPrev = y;
+}, { passive: true });
 window.addEventListener('touchend', (e) => {
   if (touchY === null || sourcesOpen) return;
+  if (FREE && introDone) { touchY = null; return; }
   const dy = touchY - e.changedTouches[0].clientY;
   touchY = null;
   if (Math.abs(dy) < 50) return;
@@ -242,7 +269,7 @@ function buildIntro() {
   // 3 · FORD puis 2017 + texte de présentation
   tl.add(() => setActive(1), t1 + 0.55)
     .add(() => setActive(2), t1 + 0.55 + I.ford)
-    .add(() => { introDone = true; phase = 2; s = 2; tl.timeScale(1); }, t1 + 0.55 + I.ford + I.settle);
+    .add(() => { introDone = true; phase = 2; s = freeT = 2; freeLocked = 2; tl.timeScale(1); }, t1 + 0.55 + I.ford + I.settle);
   return tl;
 }
 
@@ -260,7 +287,7 @@ const skipIntro = () => { if (introTl && introTl.timeScale() < 4) gsap.to(introT
 function finishIntro(at = 2) {
   introTl?.kill(); introTl = null; glide?.kill();
   Object.assign(L, LOOK_DONE);
-  s = phase = at; busy = false; introDone = true;
+  s = phase = freeT = at; freeLocked = at; busy = false; introDone = true;
   setActive(-1); setActive(at);
 }
 function replayIntro() {
@@ -277,9 +304,29 @@ function replayIntro() {
 const cinema = new THREE.Color(COLORS.cinema), brand = new THREE.Color(COLORS.brand), tmpC = new THREE.Color();
 let lastKey = '', lastBg = '', override = null, last = performance.now();
 
+function freeTick(dt) {
+  if (!introDone || busy) { freeT = freeM = s; return; }
+  const F = MOTION.free;
+  freePrev = s;
+  // Deux lissages en cascade : la cible lissée démarre doucement, puis la caméra la suit → départ progressif (ease-in) et arrivée douce (ease-out), sans dépassement
+  freeM += (freeT - freeM) * (1 - Math.exp(-dt * F.easeIn));
+  s += (freeM - s) * (1 - Math.exp(-dt * F.ease));
+  if (Math.abs(freeT - freeM) < 0.0004 && Math.abs(freeM - s) < 0.0004) { freeM = freeT; s = freeT; }
+  // Arrêt sur chaque écran : on bloque quelques secondes dès que la caméra l'atteint ou le traverse
+  const k = Math.round(s);
+  if (Math.abs(s - freeLocked) > F.rearm) freeLocked = -1;
+  const reached = s !== freePrev && k !== freeLocked && k >= MIN_PHASE && ((freePrev - k) * (s - k) <= 0 || Math.abs(s - k) < 0.003);
+  if (reached) { s = freeT = freeM = k; freeLocked = k; freeLock = performance.now() + F.dwell * 1000; freeFresh = true; }
+  phase = clamp(Math.floor(s + 0.05), MIN_PHASE, LAST);   // un clic / une flèche part de la phase qu'on vient de dépasser
+  const n = Math.round(s), d = Math.abs(s - n);
+  if (active >= 1 && Math.abs(s - active) > F.textOut) setActive(-1);
+  if (active === -1 && d < F.textIn) setActive(n);
+}
+
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
+  if (FREE) freeTick(dt);
 
   tmpC.copy(cinema).lerp(brand, clamp(L.bg));
   const bg = `#${tmpC.getHexString()}`;
