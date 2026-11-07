@@ -160,3 +160,7 @@ body.is-orbit .hotspot, body.is-orbit .thumb, body.is-orbit .back-btn { cursor: 
 .sources-list a { color: #fff; text-decoration: none; border-bottom: 1px solid transparent; }
 .sources-list a:hover, .sources-list a:focus-visible { border-bottom-color: #fff; }
 .sources-close { position: absolute; top: 18px; right: 22px; background: none; border: 0; color: #fff; cursor: pointer; font-size: 13px; }
+.sources-h { margin: 28px 0 10px; }
+.sources-legal { font-size: 14px; }
+.sources-legal p { margin: 0 0 10px; }
+.sources-legal a, .sources-list li a { text-decoration: underline; text-underline-offset: 2px; }
