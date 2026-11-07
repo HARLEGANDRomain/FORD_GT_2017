@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 import { SCREENS, COLORS, MOTION } from './config/screens.js';
 import { createStage } from './scene/stage.js';
-import { loadCar } from './scene/car.js';
+import { loadCar, glassLight } from './scene/car.js';
 import { createBloom } from './scene/bloom.js';
 import { CameraRig } from './scene/rig.js';
 import { showGroup, hideGroup } from './motion/textMotion.js';
@@ -75,7 +75,7 @@ gallery.init();
 // ---------- Apparence pilotée par l'intro (noir → lumière) ----------
 //   lights : phares (0 éteint · 1 allumé · >1 éblouissement)   dark : lumière de la scène (0 noir · 1 studio · >1 éclair)
 //   bg     : fond noir → bleu                                  hdr  : en-tête       push : travelling avant (0 → 1)
-const L = { lights: 0, dark: 0.04, bg: 0, hdr: 0, push: 0, idle: 0 };
+const L = { lights: 0, dark: 0.008, bg: 0, hdr: 0, push: 0, idle: 0 };
 const LOOK_DONE = { lights: 0, dark: 1, bg: 1, hdr: 1, push: 1, idle: 1 };
 
 // ---------- Navigation par phases (pas de défilement natif : un geste = une phase, transition fluide) ----------
@@ -127,12 +127,12 @@ function go(i) {
   const from = phase;
   phase = i;
   busy = true;
-  if (reduce) { s = freeT = i; busy = false; setActive(i); return; }
+  if (reduce) { s = freeT = freeM = i; busy = false; setActive(i); return; }
 
   if (far) {
     glide = gsap.timeline({ onComplete: () => { busy = false; } })
       .to(veil, { opacity: 1, duration: MOTION.veilIn, ease: 'power1.in' })
-      .add(() => { if (from === LAST) gallery.select(0, { instant: true }); s = freeT = i; freeLocked = i; })
+      .add(() => { if (from === LAST) gallery.select(0, { instant: true }); s = freeT = freeM = i; freeLocked = i; })
       .to(veil, { opacity: 0, duration: MOTION.veilOut, ease: 'power1.out' }, '+=0.08')
       .add(() => setActive(i), '-=0.25');
     return;
@@ -145,7 +145,7 @@ function go(i) {
       s = o.v;
       if (!shown && this.progress() > MOTION.textAt) { shown = true; setActive(i); }
     },
-    onComplete() { s = freeT = i; freeLocked = i; busy = false; if (!shown) setActive(i); },
+    onComplete() { s = freeT = freeM = i; freeLocked = i; busy = false; if (!shown) setActive(i); },
   });
 }
 const step = (d) => { if (!introDone || busy) return; go(phase + d); };
@@ -237,7 +237,7 @@ function setLook(o) { Object.assign(L, o); }
 function buildIntro() {
   const I = MOTION.intro;
   const tl = gsap.timeline({ paused: true, defaults: { overwrite: false } });
-  setLook({ lights: 0, dark: 0.04, bg: 0, hdr: 0, push: 0, idle: 0 });
+  setLook({ lights: 0, dark: 0.008, bg: 0, hdr: 0, push: 0, idle: 0 });
 
   // Travelling avant lent sur toute la séquence
   tl.to(L, { push: 1, duration: I.push, ease: 'power2.out' }, 0);
@@ -269,7 +269,7 @@ function buildIntro() {
   // 3 · FORD puis 2017 + texte de présentation
   tl.add(() => setActive(1), t1 + 0.55)
     .add(() => setActive(2), t1 + 0.55 + I.ford)
-    .add(() => { introDone = true; phase = 2; s = freeT = 2; freeLocked = 2; tl.timeScale(1); }, t1 + 0.55 + I.ford + I.settle);
+    .add(() => { introDone = true; phase = 2; s = freeT = freeM = 2; freeLocked = 2; tl.timeScale(1); }, t1 + 0.55 + I.ford + I.settle);
   return tl;
 }
 
@@ -287,7 +287,7 @@ const skipIntro = () => { if (introTl && introTl.timeScale() < 4) gsap.to(introT
 function finishIntro(at = 2) {
   introTl?.kill(); introTl = null; glide?.kill();
   Object.assign(L, LOOK_DONE);
-  s = phase = freeT = at; freeLocked = at; busy = false; introDone = true;
+  s = phase = freeT = freeM = at; freeLocked = at; busy = false; introDone = true;
   setActive(-1); setActive(at);
 }
 function replayIntro() {
@@ -333,6 +333,7 @@ function frame(now) {
   if (bg !== lastBg) { document.documentElement.style.setProperty('--bg', bg); lastBg = bg; }
   if (active === LAST) gallery.update(dt);
   stage.setDark(L.dark);
+  glassLight.value = Math.min(1, L.dark);
   carApi.setLights(L.lights, L.idle);
   header.style.opacity = String(L.hdr);
   header.style.visibility = L.hdr < 0.02 ? 'hidden' : 'visible';

@@ -133,14 +133,19 @@ function whitenBadgeLogo(m) {
  * Vitrage : reflet de Fresnel (bords et angles rasants plus clairs et plus opaques) + traînée diagonale de softbox
  * qui glisse sur la surface selon l'angle de vue. C'est ce qui fait « lire » une vitre sur fond uni.
  */
+/** Intensité du reflet des vitrages (0 = scène éteinte), pilotée par la lumière de la scène. */
+export const glassLight = { value: 1 };
+
 function addGlassSheen(m) {
   m.onBeforeCompile = (sh) => {
+    sh.uniforms.uGlassLight = glassLight;
+    sh.fragmentShader = 'uniform float uGlassLight;\n' + sh.fragmentShader;
     sh.fragmentShader = sh.fragmentShader.replace('#include <opaque_fragment>', `#include <opaque_fragment>
       {
         vec3 nv = normalize(vNormal), vv = normalize(vViewPosition);
         float fr = pow(1.0 - clamp(abs(dot(nv, vv)), 0.0, 1.0), 2.2);
         float band = smoothstep(0.0, 0.16, 0.5 - abs(fract(dot(nv.xy, vec2(0.9, 0.55)) * 1.6 + vViewPosition.x * 0.12 + vViewPosition.y * 0.07) - 0.5) * 1.0);
-        float sheen = clamp(fr * 0.9 + band * 0.22, 0.0, 1.0);
+        float sheen = clamp(fr * 0.9 + band * 0.22, 0.0, 1.0) * uGlassLight;
         gl_FragColor.rgb += vec3(0.72, 0.84, 1.0) * sheen;
         gl_FragColor.a = clamp(gl_FragColor.a + sheen * 0.55, 0.0, 1.0);
       }`);
