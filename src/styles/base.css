@@ -145,3 +145,18 @@ body.is-orbit .hotspot, body.is-orbit .thumb, body.is-orbit .back-btn { cursor: 
 /* ---------- Mode calibrage (?debug) ---------- */
 #ref-overlay { position: fixed; inset: 0; z-index: 30; pointer-events: none; background-position: center; background-repeat: no-repeat; background-size: calc(1280 * var(--u)) calc(1080 * var(--u)); opacity: 0; }
 
+
+/* Écran 04 : silhouette de la GT40 (rendu de côté) au-dessus du mot « GT40 » */
+.gt40-side img { display: block; width: 100%; height: auto; filter: drop-shadow(0 calc(10 * var(--u)) calc(16 * var(--u)) rgba(8, 28, 78, 0.35)); }
+
+/* Panneau Sources */
+#sources { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; background: rgba(9, 17, 33, 0.82); backdrop-filter: blur(6px); }
+#sources[hidden] { display: none; }
+.sources-box { position: relative; width: min(720px, 90vw); max-height: 86vh; overflow: auto; padding: 40px 44px; background: var(--bg, #3366b4); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); }
+.sources-box h2 { margin: 6px 0 18px; font-size: 40px; }
+.sources-note { margin: 0 0 20px; font-size: 14px; }
+.sources-list { margin: 0; padding: 0; list-style: none; font-size: 14px; border-top: 1px solid rgba(255, 255, 255, 0.25); }
+.sources-list li { padding: 9px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.25); }
+.sources-list a { color: #fff; text-decoration: none; border-bottom: 1px solid transparent; }
+.sources-list a:hover, .sources-list a:focus-visible { border-bottom-color: #fff; }
+.sources-close { position: absolute; top: 18px; right: 22px; background: none; border: 0; color: #fff; cursor: pointer; font-size: 13px; }

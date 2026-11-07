@@ -147,6 +147,7 @@ const step = (d) => { if (!introDone || busy) return; go(phase + d); };
 // ---------- Entrées : molette, tactile, clavier, clic ----------
 let lastWheel = 0, acc = 0, used = false;
 window.addEventListener('wheel', (e) => {
+  if (sourcesOpen) return;
   const now = performance.now();
   if (now - lastWheel > 160) { acc = 0; used = false; }     // nouveau geste (l'inertie d'un pavé tactile compte pour un seul)
   lastWheel = now;
@@ -161,7 +162,7 @@ window.addEventListener('wheel', (e) => {
 let touchY = null;
 window.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
 window.addEventListener('touchend', (e) => {
-  if (touchY === null) return;
+  if (touchY === null || sourcesOpen) return;
   const dy = touchY - e.changedTouches[0].clientY;
   touchY = null;
   if (Math.abs(dy) < 50) return;
@@ -169,7 +170,7 @@ window.addEventListener('touchend', (e) => {
 }, { passive: true });
 
 window.addEventListener('keydown', (e) => {
-  if (e.target.closest?.('button, a, input, select, textarea')) return;
+  if (sourcesOpen || e.target.closest?.('button, a, input, select, textarea')) return;
   if (!introDone) { if (['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); skipIntro(); } return; }
   const next = ['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key), prev = ['ArrowUp', 'PageUp'].includes(e.key);
   if (next || prev) { e.preventDefault(); step(next ? 1 : -1); }
@@ -177,13 +178,23 @@ window.addEventListener('keydown', (e) => {
   else if (e.key === 'End') { e.preventDefault(); go(LAST); }
 });
 
+// Panneau « Sources » : bloque la navigation tant qu'il est ouvert
+const sourcesEl = $('#sources');
+let sourcesOpen = false;
+function openSources() { sourcesOpen = true; sourcesEl.hidden = false; sourcesEl.querySelector('[data-sources-close]').focus(); }
+function closeSources() { sourcesOpen = false; sourcesEl.hidden = true; }
+sourcesEl.addEventListener('click', (e) => { if (e.target === sourcesEl || e.target.closest('[data-sources-close]')) closeSources(); });
+window.addEventListener('keydown', (e) => { if (sourcesOpen && e.key === 'Escape') closeSources(); });
+
 // Clic dans le vide = phase suivante ; liens du menu = ancres
 document.addEventListener('click', (e) => {
+  if (sourcesOpen || e.target.closest('#sources')) return;
   const a = e.target.closest('a[href^="#"]');
   if (a) {
     e.preventDefault();
     const h = a.getAttribute('href').slice(1);
     if (h === 'intro') { replayIntro(); return; }
+    if (h === 'sources') { openSources(); return; }
     const i = hashToIndex[h];
     if (i !== undefined) go(i);
     return;

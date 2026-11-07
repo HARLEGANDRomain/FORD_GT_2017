@@ -59,9 +59,16 @@ export async function loadCar(url, onProgress) {
       m.transparent = true;
       m.depthWrite = false;
       m.side = THREE.FrontSide;
-      m.opacity = n === 'RED_GLASS' ? 0.62 : n === 'ORANGE_GLASS' ? 0.6 : 0.5;
-      m.envMapIntensity = 0.45;
-      m.roughness = 0.12;
+      // alpha prémultiplié : l'opacité n'atténue plus les reflets (sinon une vitre peu opaque n'a plus aucun reflet → « invisible »)
+      m.premultipliedAlpha = true;
+      const tint = n === 'RED_GLASS' ? 0x3a0508 : n === 'ORANGE_GLASS' ? 0x3a1a02 : 0x0b1626;
+      m.color.set(tint);
+      m.opacity = n === 'RED_GLASS' ? 0.7 : n === 'ORANGE_GLASS' ? 0.65 : 0.55;
+      m.envMapIntensity = 2.6;
+      m.roughness = 0.04;
+      m.metalness = 0;
+      m.specularIntensity = 1;
+      m.ior = 1.5;
       m.needsUpdate = true;
       o.renderOrder = 2;
     } else if (n.includes('BadgeA_Material') && m.map) {
