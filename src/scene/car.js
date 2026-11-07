@@ -58,7 +58,7 @@ export async function loadCar(url, onProgress) {
       m.transmission = 0;
       m.transparent = true;
       m.depthWrite = false;
-      m.side = THREE.FrontSide;
+      m.side = THREE.DoubleSide; // les faces des vitrages sont tournées vers l'intérieur : en FrontSide elles étaient invisibles (feux arrière rouges compris)
       // alpha prémultiplié : l'opacité n'atténue plus les reflets (sinon une vitre peu opaque n'a plus aucun reflet → « invisible »)
       m.premultipliedAlpha = true;
       const tint = n === 'RED_GLASS' ? 0x3a0508 : n === 'ORANGE_GLASS' ? 0x3a1a02 : 0x0b1626;
@@ -70,6 +70,19 @@ export async function loadCar(url, onProgress) {
       m.specularIntensity = 1;
       m.ior = 1.5;
       if (n.includes('Window_Material')) addGlassSheen(m);
+      if (n === 'RED_GLASS') {
+        // feux arrière : lentille rouge opaque (en transparence elle passait derrière l'anneau argenté du bloc optique et restait invisible)
+        m.premultipliedAlpha = false;
+        m.transparent = false;
+        m.opacity = 1;
+        m.depthWrite = true;
+        m.color.set(0x5c0008);
+        m.emissive.set(0xc80c05);
+        m.emissiveIntensity = 0.28;
+        m.envMapIntensity = 0.6;
+        m.roughness = 0.18;
+        m.specularIntensity = 0.6;
+      }
       m.needsUpdate = true;
       o.renderOrder = 2;
     } else if (n.includes('BadgeA_Material') && m.map) {
