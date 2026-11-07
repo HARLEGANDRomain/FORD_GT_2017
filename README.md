@@ -1,35 +1,24 @@
-# Ford GT 2017 — site d'histoire (v1)
+# Ford GT 2017 — l'histoire d'une voiture
 
-Site one-page : modèle 3D temps réel (three.js), scroll cinématique (GSAP), 10 écrans + galerie interactive.
+Un site immersif qui raconte l'histoire de la Ford GT 2017, pensé pour les passionnés qui veulent en apprendre davantage sur ce véhicule précis.
 
-## Lancer
-```
-npm install
-npm run dev        # http://localhost:5173
-npm run build      # production dans dist/
-npm run tokens     # régénère src/styles/tokens.css depuis colorStyles.json / textStyles.json
-```
+Au centre de la page, un modèle 3D de la Ford GT tourne en temps réel dans une vraie scène d'éclairage. Le visiteur ne fait pas défiler une page classique : il avance phase par phase, et chaque étape fait évoluer la caméra autour de la voiture, pour raconter son histoire en mouvement.
 
-## Calibrer les caméras
-Ouvrir `http://localhost:5173/?debug` : panneau lil-gui + overlay Figma (touche O) pour régler
-caméra par écran, puis "copy config" et coller dans `src/config/screens.js`.
+## Ce que le site présente
 
-## Navigation et rythme
-- Écrans 01 → 03 : intro cinématique **automatique** (phares → éclair de lumière → FORD → 2017 + texte). Un clic, une touche ou un coup de molette l'accélère.
-- Ensuite : une phase par geste (molette / balayage tactile / flèches, Espace / **clic dans le vide**), transition continue entre deux cadrages. Les liens du menu sautent avec un fondu.
-- Tous les durées et le rythme de l'intro sont dans `MOTION` (`src/config/screens.js`).
-- Le logo Ford rejoue l'intro.
-- Galerie : caméra libre (glisser = tourner à 360°, élévation limitée à 2–32°, Ctrl + molette ou pincement = zoom). Les miniatures sont des raccourcis de cadrage. Les repères (`HOTSPOTS`, `ORBIT` dans `src/config/screens.js`) n'apparaissent que s'ils sont dans le champ et tournés vers la caméra ; un clic sur une roue ouvre « Détails ».
+- **Une introduction cinématique** : les phares s'allument dans le noir, un éclair de lumière révèle la voiture, puis le nom « FORD » et l'année « 2017 » apparaissent.
+- **Une narration en dix phases** : l'héritage de la marque, le contexte de la voiture, ses choix de conception, ses performances et ses détails techniques, chacun présenté avec son propre cadrage.
+- **Une galerie interactive** : une caméra libre pour observer la voiture sous tous les angles, avec des repères cliquables sur les éléments clés (roues, phares, ailes, échappement). Un clic sur une roue ouvre une fiche de détails.
+- **Une typographie et des chiffres animés** : les grandes valeurs (puissance, vitesse, années) se comptent progressivement lorsqu'elles entrent à l'écran.
 
-## Décisions
-- Blanc 80 % remplacé par blanc 100 % (override dans `scripts/build-tokens.mjs`).
-- Bleu profond `#204579` conservé tel quel.
-- Navigation = ancres (Histoire / Performances / Galerie) avec fondu de transition.
-- Phares : matériau émissif + halos additifs + deux lumières ponctuelles, pilotés en temps réel (`setLights` dans `src/scene/car.js`).
-- Textes du bas centrés (S04, S05, S06, S09) ; S07 et S08 inchangés.
-- S08 : textes placés d'après la maquette (diffère légèrement du .md).
-- Vue « Profil » de la galerie dérivée (pas de maquette dédiée).
-- Dossier parent contient `&` : lancer les commandes depuis le dossier du projet entre guillemets.
+## Pour qui
 
-## Limites v1
-Desktop d'abord (cadre de référence 1280×1080), pas de version mobile, calibration fine des caméras à faire écran par écran.
+Ce site s'adresse à quelqu'un qui aime les voitures et qui veut comprendre ce qui rend la Ford GT 2017 particulière, sans lire un article de magazine. Il privilégie l'expérience visuelle et le rythme de la narration plutôt que la densité d'informations.
+
+## Contexte
+
+Projet de portfolio : il documente la conception d'un site de présentation automobile, de la maquette Figma jusqu'à l'intégration en 3D temps réel. Il sert à montrer une démarche de conception UX/UI autant que le résultat final.
+
+## Technologies
+
+Le site est construit sans framework d'interface : HTML, CSS et JavaScript, avec Three.js pour la 3D, GSAP pour les animations et Vite pour la mise en forme du projet.
