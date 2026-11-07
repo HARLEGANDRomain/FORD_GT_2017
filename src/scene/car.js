@@ -64,6 +64,8 @@ export async function loadCar(url, onProgress) {
       m.roughness = 0.12;
       m.needsUpdate = true;
       o.renderOrder = 2;
+    } else if (n.includes('BadgeA_Material') && m.map) {
+      whitenBadgeLogo(m);
     } else if (n.includes('CalliperGloss')) {
       m.envMapIntensity = 1.2;
     }
@@ -75,6 +77,35 @@ export async function loadCar(url, onProgress) {
   const led = extractLeds(car);
   const lights = buildHeadlights(led);
   return { car, root, anchors, led, lightState: lights.state, setLights: lights.set, raycastPoint: (ray) => raycastSurface(car, ray) };
+}
+
+/**
+ * Le logo Ford de l'atlas « BadgeA » est peint en sombre (contour et lettrage) : on repeint en blanc
+ * uniquement les pixels sombres et non bleus de la zone de l'ovale (moitié basse de l'atlas).
+ * Le fond bleu de l'ovale, le texte « ECOBOOST » et « POWERED BY » ne sont pas touchés.
+ */
+function whitenBadgeLogo(m) {
+  const img = m.map.image;
+  if (!img?.width) return;
+  const w = img.width, h = img.height;
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.drawImage(img, 0, 0);
+  const d = g.getImageData(0, 0, w, h), p = d.data;
+  for (let y = Math.floor(h * 0.57); y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      const r = p[i], gg = p[i + 1], b = p[i + 2];
+      if (p[i + 3] > 0 && Math.max(r, gg, b) < 110 && b - r < 60) { p[i] = p[i + 1] = p[i + 2] = 255; }
+    }
+  }
+  g.putImageData(d, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.flipY = m.map.flipY; t.wrapS = m.map.wrapS; t.wrapT = m.map.wrapT;
+  t.colorSpace = THREE.SRGBColorSpace;
+  m.map = t;
+  m.needsUpdate = true;
 }
 
 function collect(car, matchName) {
