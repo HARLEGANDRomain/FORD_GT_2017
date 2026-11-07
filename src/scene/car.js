@@ -63,12 +63,13 @@ export async function loadCar(url, onProgress) {
       m.premultipliedAlpha = true;
       const tint = n === 'RED_GLASS' ? 0x3a0508 : n === 'ORANGE_GLASS' ? 0x3a1a02 : 0x0b1626;
       m.color.set(tint);
-      m.opacity = n === 'RED_GLASS' ? 0.7 : n === 'ORANGE_GLASS' ? 0.65 : 0.55;
+      m.opacity = n === 'RED_GLASS' ? 0.7 : n === 'ORANGE_GLASS' ? 0.65 : 0.72;
       m.envMapIntensity = 2.6;
       m.roughness = 0.04;
       m.metalness = 0;
       m.specularIntensity = 1;
       m.ior = 1.5;
+      if (n.includes('Window_Material')) addGlassSheen(m);
       m.needsUpdate = true;
       o.renderOrder = 2;
     } else if (n.includes('BadgeA_Material') && m.map) {
@@ -113,6 +114,25 @@ function whitenBadgeLogo(m) {
   t.colorSpace = THREE.SRGBColorSpace;
   m.map = t;
   m.needsUpdate = true;
+}
+
+/**
+ * Vitrage : reflet de Fresnel (bords et angles rasants plus clairs et plus opaques) + traînée diagonale de softbox
+ * qui glisse sur la surface selon l'angle de vue. C'est ce qui fait « lire » une vitre sur fond uni.
+ */
+function addGlassSheen(m) {
+  m.onBeforeCompile = (sh) => {
+    sh.fragmentShader = sh.fragmentShader.replace('#include <opaque_fragment>', `#include <opaque_fragment>
+      {
+        vec3 nv = normalize(vNormal), vv = normalize(vViewPosition);
+        float fr = pow(1.0 - clamp(abs(dot(nv, vv)), 0.0, 1.0), 2.2);
+        float band = smoothstep(0.0, 0.16, 0.5 - abs(fract(dot(nv.xy, vec2(0.9, 0.55)) * 1.6 + vViewPosition.x * 0.12 + vViewPosition.y * 0.07) - 0.5) * 1.0);
+        float sheen = clamp(fr * 0.9 + band * 0.22, 0.0, 1.0);
+        gl_FragColor.rgb += vec3(0.72, 0.84, 1.0) * sheen;
+        gl_FragColor.a = clamp(gl_FragColor.a + sheen * 0.55, 0.0, 1.0);
+      }`);
+  };
+  m.customProgramCacheKey = () => 'glass-sheen';
 }
 
 function collect(car, matchName) {
