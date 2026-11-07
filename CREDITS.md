@@ -25,3 +25,7 @@ Inter et Iosevka Charon (SIL OFL 1.1) ; three.js (MIT) ; GSAP ; Vite (MIT).
 ## Marques
 
 Projet personnel et non commercial, sans lien avec Ford Motor Company. Ford, Ford GT, GT40 et le logo Ford sont des marques de leurs propriétaires.
+
+## Mesure d'audience
+
+Cloudflare Web Analytics (sans cookie) est intégré à `index.html`.
