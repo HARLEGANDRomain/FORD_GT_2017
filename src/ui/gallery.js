@@ -1,6 +1,6 @@
 import gsap from 'gsap';
 import * as THREE from 'three';
-import { GALLERY, HOTSPOTS, ORBIT } from '../config/screens.js';
+import { GALLERY, HOTSPOTS, ORBIT, camOf, clipOf } from '../config/screens.js';
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -12,7 +12,7 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
  *    et tournés vers la caméra ; un clic sur une roue mène à l'état « Détails » (cadrage découpé + fiche).
  */
 export function createGallery({ root, rig, carApi, setClip, stage }) {
-  const states = GALLERY.map((g) => rig.toState(g.cam));
+  const states = GALLERY.map((g) => rig.toState(camOf(g)));
   const DETAIL = GALLERY.findIndex((g) => g.clip);
   const cam = { ...states[0] };            // état de caméra courant (lu par main.js)
   let index = 0;
@@ -77,7 +77,7 @@ export function createGallery({ root, rig, carApi, setClip, stage }) {
   // ---------- miniatures rendues depuis le modèle 3D ----------
   function renderThumbs() {
     GALLERY.forEach((g, i) => {
-      const url = stage.snapshot((c, w, h) => rig.apply(rig.toState(g.thumb), c, { W: w, H: h, u: Math.min(w / 1280, h / 1080), oy: 0 }));
+      const url = stage.snapshot((c, w, h) => rig.apply(rig.toState({ ...g.thumb, anchor: [640, 540] }), c, { W: w, H: h, u: Math.min(w / 1280, h / 1080), oy: 0 }));
       thumbs[i].querySelector('img').src = url;
     });
   }
@@ -118,7 +118,7 @@ export function createGallery({ root, rig, carApi, setClip, stage }) {
     const apply = (p) => {
       Object.assign(cam, rig.lerp(from, to, p));
       clipObj.k = clipObj.k0 + (wantClip - clipObj.k0) * p;
-      setClip(clipObj.k, GALLERY[wantClip ? i : prev].clip);
+      setClip(clipObj.k, clipOf(GALLERY[wantClip ? i : prev]));
     };
     clipObj.k0 = clipObj.k;
     if (instant) { apply(1); done(); return; }
@@ -198,7 +198,7 @@ export function createGallery({ root, rig, carApi, setClip, stage }) {
     if (e.key === 'ArrowRight') select(Math.min(GALLERY.length - 1, index + 1));
     if (e.key === 'ArrowLeft') select(Math.max(0, index - 1));
   });
-  window.addEventListener('resize', () => { if (active) setClip(clipObj.k, GALLERY[DETAIL].clip); });
+  window.addEventListener('resize', () => { if (active) setClip(clipObj.k, clipOf(GALLERY[DETAIL])); });
 
   return {
     cam,

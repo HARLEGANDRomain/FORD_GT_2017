@@ -13,33 +13,47 @@
  * Les valeurs sont un premier calage : utiliser le mode ?debug (voir README) pour les affiner
  * en superposant la maquette Figma.
  */
+import { MOBILE } from './device.js';
+
+/** Cadrage actif : `mcam` (portrait, ancre [x en px de 390, y en fraction de hauteur]) sur mobile, sinon `cam`. */
+export const camOf = (e) => (MOBILE && e.mcam ? e.mcam : e.cam);
+/** Découpe du canvas (état « Détails ») : `mclip` = [x px, y fraction, w px, h fraction] sur mobile. */
+export const clipOf = (e) => (MOBILE && e.mclip ? e.mclip : e.clip);
+
 export const SCREENS = [
   { n: 1, id: 'intro', hash: 'intro', ref: '1. GT40 - 2017 - Cinematique/intro Page@2x.png',
     cam: 'same-as-2', exposure: 0, bg: 'cinema', header: false },
 
   { n: 2, id: 'modele', hash: 'modele', ref: '2. GT40 - 2017 - Landing page@2x.png',
-    cam: { az: 180, el: 4, dist: 8.3, fov: 28, pivot: 'center', anchor: [647, 700] } },
+    cam: { az: 180, el: 4, dist: 8.3, fov: 28, pivot: 'center', anchor: [647, 700] },
+    mcam: { az: 180, el: 4, dist: 10.3, fov: 28, pivot: 'center', anchor: [195, 0.6] } },
 
   { n: 3, id: 'presentation', hash: 'presentation', ref: '3. GT40 - 2017 - Landing page@2x.png',
     cam: 'same-as-2' },
 
   { n: 4, id: 'heritage', hash: 'histoire', ref: '4. La course en héritage@2x.png',
-    cam: { az: 92, el: 6, dist: 6.7, fov: 28, pivot: 'center', anchor: [1085, 629] } },
+    cam: { az: 92, el: 6, dist: 6.7, fov: 28, pivot: 'center', anchor: [1085, 629] },
+    mcam: { az: 92, el: 6, dist: 21, fov: 28, pivot: 'center', anchor: [195, 0.63] } },
 
   { n: 5, id: 'nouvelle-ere', hash: 'nouvelle-ere', ref: '5. Une nouvelle ère@2x.png',
-    cam: { az: 92, el: 6, dist: 6.7, fov: 28, pivot: 'center', anchor: [625, 615] } },
+    cam: { az: 92, el: 6, dist: 6.7, fov: 28, pivot: 'center', anchor: [625, 615] },
+    mcam: { az: 92, el: 6, dist: 21, fov: 28, pivot: 'center', anchor: [195, 0.5] } },
 
   { n: 6, id: 'fabrication', hash: 'fabrication', ref: '6. Rare par nature@2x.png',
-    cam: { az: 78, el: 6, dist: 6.7, fov: 28, pivot: 'rearWheelL', anchor: [560, 690] } },
+    cam: { az: 78, el: 6, dist: 6.7, fov: 28, pivot: 'rearWheelL', anchor: [560, 690] },
+    mcam: { az: 78, el: 6, dist: 11.5, fov: 28, pivot: 'rearWheelL', anchor: [130, 0.59] } },
 
   { n: 7, id: 'performances', hash: 'performances', ref: '7. De la vision à la route@2x.png',
-    cam: { az: 0, el: 5, dist: 7.7, fov: 28, pivot: 'center', anchor: [640, 745] } },
+    cam: { az: 0, el: 5, dist: 7.7, fov: 28, pivot: 'center', anchor: [640, 745] },
+    mcam: { az: 0, el: 5, dist: 10.5, fov: 28, pivot: 'center', anchor: [195, 0.56] } },
 
   { n: 8, id: 'le-mans', hash: 'le-mans', ref: '8. Le Mans encore@2x.png',
-    cam: { az: 0, el: 89.6, dist: 11.7, fov: 28, pivot: 'center', anchor: [597, 598] } },
+    cam: { az: 0, el: 89.6, dist: 11.7, fov: 28, pivot: 'center', anchor: [597, 598] },
+    mcam: { az: 0, el: 89.6, dist: 21.5, fov: 28, pivot: 'center', anchor: [262, 0.5] } },
 
   { n: 9, id: 'derniere-edition', hash: 'derniere-edition', ref: '9. L’histoire continue@2x.png',
-    cam: { az: 225, el: 22, dist: 10.6, fov: 28, pivot: 'center', anchor: [650, 520] } },
+    cam: { az: 225, el: 22, dist: 10.6, fov: 28, pivot: 'center', anchor: [650, 520] },
+    mcam: { az: 225, el: 22, dist: 19.5, fov: 28, pivot: 'center', anchor: [195, 0.465] } },
 
   // 10 · 11 · 12 : un seul écran de défilement, trois (quatre) états pilotés par les miniatures.
   { n: 10, id: 'galerie', hash: 'galerie', ref: '10. Galerie - Vue d\'ensemble@2x.png', cam: 'gallery' },
@@ -49,18 +63,22 @@ export const SCREENS = [
 export const GALLERY = [
   { key: 'avant', label: 'Avant', n: 10, ref: '10. Galerie - Vue d\'ensemble@2x.png',
     cam: { az: 222, el: 10, dist: 5.65, fov: 40, pivot: 'center', anchor: [565, 455] },
+    mcam: { az: 222, el: 10, dist: 14, fov: 40, pivot: 'center', anchor: [195, 0.5] },
     thumb: { az: 225, el: 10, dist: 8.6, fov: 20, pivot: 'center' } },
   { key: 'profil', label: 'Profil', n: 10, ref: null, // pas de maquette : cadrage dérivé
     cam: { az: 90, el: 6, dist: 9.4, fov: 28, pivot: 'center', anchor: [640, 530] },
+    mcam: { az: 90, el: 6, dist: 24, fov: 28, pivot: 'center', anchor: [195, 0.5] },
     thumb: { az: 90, el: 8, dist: 6.0, fov: 20, pivot: [0.35, 0.55, 0] } },
   { key: 'arriere', label: 'Arrière', n: 11, ref: '11. Galerie - Vue arrière@2x.png',
     cam: { az: 0, el: 5, dist: 7.0, fov: 28, pivot: 'center', anchor: [632, 500] },
+    mcam: { az: 0, el: 5, dist: 10.5, fov: 28, pivot: 'center', anchor: [195, 0.48] },
     thumb: { az: 0, el: 8, dist: 6.2, fov: 20, pivot: [0, 0.6, 0] } },
   { key: 'detail', label: 'Détails', n: 12, ref: '12. Galerie - Détail@2x.png',
     cam: { az: 92, el: 3, dist: 6.7, fov: 28, pivot: 'frontWheelL', anchor: [380, 510] },
+    mcam: { az: 92, el: 3, dist: 6, fov: 28, pivot: 'frontWheelL', anchor: [195, 0.38] },
     thumb: { az: 92, el: 6, dist: 3.4, fov: 20, pivot: 'frontWheelL' },
     /** cadrage de découpe du canvas (px de maquette) : x, y, w, h */
-    clip: [48, 240, 620, 560] },
+    clip: [48, 240, 620, 560], mclip: [20, 0.19, 350, 0.38] },
 ];
 
 /**

@@ -5,10 +5,12 @@ import '@fontsource/iosevka-charon/latin-700.css';
 import '@fontsource/iosevka-charon/symbols-700.css';
 import './styles/tokens.css';
 import './styles/base.css';
+import './styles/mobile.css';
+import { MOBILE } from './config/device.js';
 
 import * as THREE from 'three';
 import gsap from 'gsap';
-import { SCREENS, COLORS, MOTION } from './config/screens.js';
+import { SCREENS, COLORS, MOTION, camOf } from './config/screens.js';
 import { createStage } from './scene/stage.js';
 import { loadCar, glassLight } from './scene/car.js';
 import { createBloom } from './scene/bloom.js';
@@ -52,18 +54,18 @@ const rig = new CameraRig(stage.camera, stage, carApi.anchors);
 
 // ---------- États de caméra ----------
 const states = [];
-states[1] = rig.toState(SCREENS[1].cam);
+states[1] = rig.toState(camOf(SCREENS[1]));
 states[0] = states[1];
 states[2] = states[1];
-for (let i = 3; i < LAST; i++) states[i] = rig.toState(SCREENS[i].cam);
+for (let i = 3; i < LAST; i++) states[i] = rig.toState(camOf(SCREENS[i]));
 
 // ---------- Découpe du canvas (état « Détails ») ----------
 let clipK = 0, clipRect = null;
 function applyClip() {
   if (clipK <= 0.001 || !clipRect) { canvasWrap.style.clipPath = ''; return; }
-  const { W, H, u, oy } = rig.frame();
-  const [x, y, w, h] = clipRect;
-  const l = W / 2 + (x - 640) * u, t = oy + y * u, r = W - (l + w * u), b = H - (t + h * u);
+  const { W, H, u, oy, dw, mobile } = rig.frame();
+  const [x, y, w, h] = clipRect;     // mobile : y et h en fraction de la hauteur
+  const l = W / 2 + (x - dw / 2) * u, t = mobile ? y * H : oy + y * u, r = W - (l + w * u), b = H - (t + (mobile ? h * H : h * u));
   canvasWrap.style.clipPath = `inset(${t * clipK}px ${r * clipK}px ${b * clipK}px ${l * clipK}px round ${4 * clipK * u}px)`;
 }
 const setClip = (k, rect) => { clipK = k; if (rect) clipRect = rect; applyClip(); };
@@ -71,6 +73,7 @@ const setClip = (k, rect) => { clipK = k; if (rect) clipRect = rect; applyClip()
 stage.setDark(1); // miniatures rendues studio allumé
 const gallery = createGallery({ root: front[10], rig, carApi, setClip, stage });
 gallery.init();
+if (MOBILE) { const h = $('#g-hint'); if (h) h.textContent = 'Glisser pour tourner · Pincer pour zoomer'; }
 
 // ---------- Apparence pilotée par l'intro (noir → lumière) ----------
 //   lights : phares (0 éteint · 1 allumé · >1 éblouissement)   dark : lumière de la scène (0 noir · 1 studio · >1 éclair)
@@ -153,7 +156,7 @@ const step = (d) => { if (!introDone || busy) return; go(phase + d); };
 // ---------- Entrées : molette, tactile, clavier, clic ----------
 let lastWheel = 0, acc = 0, used = false;
 window.addEventListener('wheel', (e) => {
-  if (sourcesOpen) return;
+  if (sourcesOpen || menuOpen()) return;
   const now = performance.now();
   if (now - lastWheel > 160) { acc = 0; used = false; }     // nouveau geste (l'inertie d'un pavé tactile compte pour un seul)
   lastWheel = now;
@@ -180,7 +183,7 @@ let touchY = null;
 let touchPrev = 0;
 window.addEventListener('touchstart', (e) => { touchY = touchPrev = e.touches[0].clientY; }, { passive: true });
 window.addEventListener('touchmove', (e) => {
-  if (!FREE || !introDone || sourcesOpen || touchY === null || (busy && glideFar) || active === LAST && gallery.canOrbit) return;
+  if (!FREE || !introDone || sourcesOpen || menuOpen() || touchY === null || (busy && glideFar) || active === LAST && gallery.canOrbit) return;
   if (performance.now() < freeLock) { touchPrev = e.touches[0].clientY; return; }
   if (busy) { glide?.kill(); busy = false; setActive(-1); }
   const y = e.touches[0].clientY;
@@ -197,7 +200,7 @@ window.addEventListener('touchend', (e) => {
 }, { passive: true });
 
 window.addEventListener('keydown', (e) => {
-  if (sourcesOpen || e.target.closest?.('button, a, input, select, textarea')) return;
+  if (sourcesOpen || menuOpen() || e.target.closest?.('button, a, input, select, textarea')) return;
   if (!introDone) { if (['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); skipIntro(); } return; }
   const next = ['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key), prev = ['ArrowUp', 'PageUp'].includes(e.key);
   if (next || prev) { e.preventDefault(); step(next ? 1 : -1); }
@@ -213,12 +216,25 @@ function closeSources() { sourcesOpen = false; sourcesEl.hidden = true; }
 sourcesEl.addEventListener('click', (e) => { if (e.target === sourcesEl || e.target.closest('[data-sources-close]')) closeSources(); });
 window.addEventListener('keydown', (e) => { if (sourcesOpen && e.key === 'Escape') closeSources(); });
 
+// Menu mobile (plein écran)
+const menuBtn = $('.menu-btn');
+const root = document.documentElement;
+const menuOpen = () => root.classList.contains('menu-open');
+function setMenu(o) {
+  root.classList.toggle('menu-open', o);
+  menuBtn.setAttribute('aria-expanded', String(o));
+  menuBtn.querySelector('.menu-lab').textContent = o ? 'Fermer' : 'Menu';
+}
+menuBtn.addEventListener('click', () => setMenu(!menuOpen()));
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menuOpen()) setMenu(false); });
+
 // Clic dans le vide = phase suivante ; liens du menu = ancres
 document.addEventListener('click', (e) => {
   if (sourcesOpen || e.target.closest('#sources')) return;
   const a = e.target.closest('a[href^="#"]');
   if (a) {
     e.preventDefault();
+    if (menuOpen()) setMenu(false);
     const h = a.getAttribute('href').slice(1);
     if (h === 'intro') { replayIntro(); return; }
     if (h === 'sources') { openSources(); return; }
@@ -226,7 +242,7 @@ document.addEventListener('click', (e) => {
     if (i !== undefined) go(i);
     return;
   }
-  if (e.target.closest('button, #site-header, .hotspot, #thumbs, [data-g-go]')) return;
+  if (menuOpen() || e.target.closest('button, #site-header, .hotspot, #thumbs, [data-g-go]')) return;
   if (!introDone) { skipIntro(); return; }
   step(1);
 });

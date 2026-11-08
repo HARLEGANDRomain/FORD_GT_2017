@@ -1,0 +1,150 @@
+/* ------------------------------------------------------------------
+   Mobile (portrait étroit) — classe html.m posée par src/config/device.js.
+   Cadre de 390 px de large : --u = 1 px de maquette mobile.
+   Les écrans passent d'un placement par coordonnées à un flux vertical :
+   zone haute (surtitre + titre) · voiture au centre · zone basse (texte), la zone basse est poussée par [data-bot].
+   ------------------------------------------------------------------ */
+.menu-btn { display: none; }
+
+html.m {
+  --u: calc(100vw / 390);
+  --oy: 0px;
+}
+html.m body { height: 100svh; min-height: 100svh; }
+
+/* ---------- Échelle typographique ---------- */
+html.m .ts-gt-reperes-surtitre-chapitre { font-size: calc(11 * var(--u)); letter-spacing: 0.1em; }
+html.m .ts-gt-reperes-dates { font-size: calc(10.5 * var(--u)); }
+html.m .ts-gt-legendes-petite { font-size: calc(12 * var(--u)); }
+html.m .ts-gt-corps-s-introduction, html.m .ts-gt-corps-s-recit { font-size: calc(14 * var(--u)); }
+html.m .ts-gt-corps-m-recit { font-size: calc(14 * var(--u)); }
+html.m .ts-gt-corps-l-recit { font-size: calc(14.5 * var(--u)); }
+html.m .ts-gt-corps-xl-recit { font-size: calc(14.5 * var(--u)); }
+html.m .ts-gt-h4-accroche { font-size: calc(20 * var(--u)); }
+html.m .ts-gt-h3-edition { font-size: calc(21 * var(--u)); }
+html.m .ts-gt-h2-intertitre { font-size: calc(27 * var(--u)); }
+html.m .ts-gt-chiffres-cles-s-motorisation { font-size: calc(32 * var(--u)); }
+html.m .ts-gt-chiffres-cles-m-chronologie { font-size: calc(38 * var(--u)); }
+html.m .ts-gt-h1-standard { font-size: calc(46 * var(--u)); }
+html.m .ts-gt-h1-centre { font-size: calc(37 * var(--u)); }
+html.m .ts-gt-h1-compact { font-size: calc(48 * var(--u)); }
+html.m .ts-gt-h1-sur-une-ligne { font-size: calc(38 * var(--u)); white-space: normal; }
+html.m .ts-gt-h1-impact { font-size: calc(60 * var(--u)); }
+html.m .ts-gt-h1-conclusion { font-size: calc(50 * var(--u)); }
+html.m .ts-gt-chiffres-cles-l-annee-finale { font-size: calc(60 * var(--u)); }
+html.m .ts-gt-chiffres-cles-l-annee { font-size: calc(110 * var(--u)); }
+html.m .ts-gt-chiffres-cles-xxl-heritage { font-size: calc(128 * var(--u)); }
+html.m .ts-gt-chiffres-cles-xxl-anniversaire { font-size: calc(170 * var(--u)); }
+html.m .ts-gt-chiffres-cles-geant-puissance { font-size: calc(190 * var(--u)); }
+html.m .ts-gt-display-modele-cinematique { font-size: calc(218 * var(--u)); }
+
+html.m .nowrap { white-space: normal; }
+html.m [class*='ts-gt-h1'], html.m [class*='chiffres-cles'], html.m [class*='display-modele'], html.m .ts-gt-h2-intertitre { white-space: nowrap; }
+html.m .ts-gt-h1-sur-une-ligne { white-space: normal; }
+html.m br.dbr { display: none; }
+
+/* ---------- En-tête : logo + menu plein écran ---------- */
+html.m .logo { left: calc(20 * var(--u)); top: calc(16 * var(--u)); width: calc(56 * var(--u)); height: calc(32 * var(--u)); z-index: 3; }
+html.m .menu-btn {
+  display: flex; align-items: center; gap: calc(10 * var(--u)); position: absolute; z-index: 3; pointer-events: auto;
+  right: calc(8 * var(--u)); top: calc(8 * var(--u)); min-height: 48px; padding: 0 calc(12 * var(--u));
+  background: none; border: 0; color: #fff; cursor: pointer; font-size: calc(14 * var(--u)); -webkit-tap-highlight-color: transparent;
+}
+html.m .menu-ico, html.m .menu-ico::before { display: block; width: calc(22 * var(--u)); height: 2px; background: #fff; transition: transform 0.25s; }
+html.m .menu-ico { position: relative; margin-bottom: calc(6 * var(--u)); }
+html.m .menu-ico::before { content: ''; position: absolute; left: 0; top: calc(7 * var(--u)); }
+html.m.menu-open .menu-ico { transform: translateY(calc(3.5 * var(--u))) rotate(45deg); }
+html.m.menu-open .menu-ico::before { transform: translateY(calc(-7 * var(--u))) rotate(-90deg); top: calc(7 * var(--u)); }
+html.m #site-header nav {
+  display: none; position: fixed; inset: 0; z-index: 2; flex-direction: column; justify-content: center; gap: calc(6 * var(--u));
+  padding: calc(80 * var(--u)) calc(28 * var(--u)) calc(40 * var(--u)); background: var(--bg); pointer-events: auto;
+}
+html.m.menu-open #site-header nav { display: flex; }
+html.m #site-header nav a {
+  font-family: var(--font-display); font-weight: 700; font-size: calc(40 * var(--u)); letter-spacing: -0.04em; line-height: 1.15;
+  padding: calc(8 * var(--u)) 0; border-bottom: 0;
+}
+html.m #site-header nav a:last-child { margin-top: calc(18 * var(--u)); font-family: var(--font-ui); font-weight: 500; font-size: calc(15 * var(--u)); letter-spacing: 0; }
+html.m #site-header nav a { opacity: 0.62; }
+html.m #site-header nav a[aria-current], html.m #site-header nav a:active { opacity: 1; }
+
+/* ---------- Flux vertical des écrans (calque avant) ---------- */
+html.m #layer-front .scr {
+  display: flex; flex-direction: column; gap: calc(10 * var(--u));
+  padding: calc(84 * var(--u)) calc(20 * var(--u)) calc(24 * var(--u) + env(safe-area-inset-bottom, 0px));
+}
+html.m #layer-front .pos, html.m #layer-front .card .pos {
+  position: static; width: auto; height: auto; text-align: left; line-height: 1.3;
+}
+html.m #layer-front .pos.al-c { text-align: center; }
+html.m #layer-front .lh-155 { line-height: 1.5; }
+html.m #layer-front .lh-96 { line-height: 0.98; }
+html.m #layer-front [data-bot] { margin-top: auto; }
+html.m #layer-front .pos.rule { width: 100%; height: 1px; flex: none; }
+html.m #layer-front .pos[style*='--lh'] { line-height: 1.2; }
+
+/* Écran 03 */
+html.m [data-s='3'] .pos { text-align: center; }
+/* Écran 05 */
+html.m #t5 { text-align: center; }
+/* Écran 06 : le paragraphe central remonte sous le titre */
+/* Écran 07 : deux repères chiffrés côte à côte */
+html.m .stats { display: grid; grid-template-columns: 1fr 1fr; gap: calc(16 * var(--u)); }
+html.m .stat { display: flex; flex-direction: column; gap: calc(8 * var(--u)); }
+html.m .stat .rule { margin-bottom: calc(2 * var(--u)); }
+/* Écran 09 : quatre éditions en grille 2 × 2 */
+html.m .eds { display: grid; grid-template-columns: 1fr 1fr; gap: calc(14 * var(--u)) calc(16 * var(--u)); }
+html.m .ed { display: flex; flex-direction: column; gap: calc(4 * var(--u)); }
+html.m .ed .rule { margin-bottom: calc(4 * var(--u)); }
+html.m .ed .ts-gt-legendes-petite { white-space: normal; line-height: 1.35; }
+html.m [data-s='9'] .ts-gt-chiffres-cles-l-annee-finale { position: absolute !important; right: calc(20 * var(--u)); top: 15svh; text-align: right; }
+html.m [data-s='9'] .ts-gt-reperes-surtitre-chapitre.al-r { position: absolute !important; right: calc(20 * var(--u)); top: calc(15svh + 60 * var(--u)); text-align: right; }
+
+/* ---------- Calque arrière (grands mots derrière la voiture) ---------- */
+html.m #layer-back .pos { position: absolute; left: 0; right: 0; width: auto; text-align: center; top: 0; }
+html.m #layer-back [data-s='2'] .pos, html.m #layer-back [data-s='3'] .pos { top: 15svh; filter: drop-shadow(0 calc(10 * var(--u)) calc(16 * var(--u)) rgba(8, 28, 78, 0.38)); }
+html.m #layer-back [data-s='4'] .gt40-side { top: 31svh; left: calc(14 * var(--u)); right: calc(14 * var(--u)); }
+html.m #layer-back [data-s='4'] .ts-gt-chiffres-cles-xxl-heritage { top: 40svh; text-align: right; padding-right: calc(18 * var(--u)); }
+html.m #layer-back [data-s='5'] .pos { top: 30svh; left: calc(18 * var(--u)); text-align: left; }
+html.m #layer-back [data-s='7'] .numwrap { top: 31svh; text-align: center; }
+html.m .num-sup { left: auto; right: 0; top: calc(-20 * var(--u)); margin: 0; }
+html.m #layer-back [data-s='8'] .pos { left: calc(18 * var(--u)); right: auto; text-align: left; top: 29svh; }
+html.m #layer-back [data-s='8'] .pos + .pos { top: calc(29svh + 150 * var(--u)); }
+html.m #layer-back [data-s='9'] .pos { top: 15svh; left: calc(20 * var(--u)); text-align: left; }
+
+/* ---------- Galerie ---------- */
+html.m #layer-front [data-s='10'] #g-hint { position: absolute; top: auto; left: calc(20 * var(--u)); right: calc(20 * var(--u)); bottom: calc(118 * var(--u) + env(safe-area-inset-bottom, 0px)); text-align: center; }
+html.m #layer-front [data-s='10'] > .pos.rule { position: absolute; top: auto; left: calc(20 * var(--u)); right: calc(20 * var(--u)); width: auto; bottom: calc(108 * var(--u) + env(safe-area-inset-bottom, 0px)); margin: 0; }
+html.m #thumbs {
+  position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); bottom: calc(20 * var(--u) + env(safe-area-inset-bottom, 0px));
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(8 * var(--u)); pointer-events: auto;
+}
+html.m #thumbs .thumb { position: static; width: auto; }
+html.m .thumb-img { height: calc(46 * var(--u)); }
+html.m .thumb-bar { margin-top: calc(6 * var(--u)); }
+html.m .thumb-label { margin-top: calc(6 * var(--u)); font-size: calc(11.5 * var(--u)); }
+html.m .hotspot .ring { left: calc(-14 * var(--u)); top: calc(-14 * var(--u)); width: calc(28 * var(--u)); height: calc(28 * var(--u)); }
+html.m .hotspot::after { content: ''; position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; }
+html.m .hotspot .hs-label { left: calc(22 * var(--u)); font-size: calc(11.5 * var(--u)); }
+html.m .ring-lg, html.m .hline { display: none; }
+html.m [data-g='detail'] { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: 59svh; }
+html.m [data-g='detail'] .card { display: flex; flex-direction: column; gap: calc(8 * var(--u)); }
+html.m [data-g='detail'] .card .rule:has(+ .back-btn), html.m [data-g='detail'] .card .rule:last-child { display: none; }
+html.m .back-btn { min-height: 40px; }
+html.m .back-btn svg { width: 12px; height: 12px; }
+
+/* ---------- Panneau Sources ---------- */
+html.m .sources-box { width: 100vw; height: 100svh; max-height: none; padding: 64px 20px 36px; border: 0; }
+html.m .sources-box h2 { font-size: 28px; margin-bottom: 14px; }
+html.m .sources-close { top: 12px; right: 8px; padding: 14px; font-size: 14px; }
+html.m .sources-list li { padding: 12px 0; }
+
+/* Petits écrans (iPhone SE, mini…) */
+@media (max-height: 740px) {
+  html.m #layer-front .scr { padding-top: calc(72 * var(--u)); padding-bottom: calc(18 * var(--u)); gap: calc(8 * var(--u)); }
+  html.m .ts-gt-corps-l-recit, html.m .ts-gt-corps-xl-recit, html.m .ts-gt-corps-m-recit, html.m .ts-gt-corps-s-recit, html.m .ts-gt-corps-s-introduction { font-size: calc(13.5 * var(--u)); }
+  html.m .ts-gt-chiffres-cles-m-chronologie { font-size: calc(30 * var(--u)); }
+  html.m .ts-gt-h2-intertitre { font-size: calc(24 * var(--u)); }
+  html.m .eds { gap: calc(10 * var(--u)) calc(16 * var(--u)); }
+  html.m .ed .ts-gt-legendes-petite { font-size: calc(11.5 * var(--u)); }
+}
