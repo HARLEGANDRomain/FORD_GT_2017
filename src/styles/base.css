@@ -164,3 +164,33 @@ body.is-orbit .hotspot, body.is-orbit .thumb, body.is-orbit .back-btn { cursor: 
 .sources-legal { font-size: 14px; }
 .sources-legal p { margin: 0 0 10px; }
 .sources-legal a, .sources-list li a { text-decoration: underline; text-underline-offset: 2px; }
+
+/* ---------- Frise des chapitres : une barre par écran, sur toute la largeur, sous l'en-tête ---------- */
+#frise { position: absolute; left: calc(48 * var(--u)); right: calc(48 * var(--u)); top: calc(var(--oy) + 96 * var(--u)); display: flex; gap: calc(6 * var(--u)); pointer-events: auto; }
+#frise a { position: relative; flex: 1; height: calc(18 * var(--u)); font-size: 0; }                    /* zone cliquable plus haute que la barre */
+#frise a::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: rgba(255, 255, 255, 0.28); transition: background 0.25s; }
+#frise a:hover::before { background: rgba(255, 255, 255, 0.65); }
+#frise a.is-past::before, #frise a[aria-current]::before { background: #fff; }
+
+/* ---------- Écran 06 : total de production ---------- */
+.num-production { font-family: var(--font-display); font-weight: 700; font-size: calc(104 * var(--u)); letter-spacing: -0.05em; }
+
+/* ---------- Galerie → épilogue, et liens de l'épilogue ---------- */
+#g-next, .fin-actions a { pointer-events: auto; color: #fff; text-decoration: none; }
+#g-next:hover { text-decoration: underline; text-underline-offset: calc(4 * var(--u)); }
+.fin-actions { display: flex; justify-content: space-between; gap: calc(24 * var(--u)); }
+.fin-actions a { font-size: calc(16 * var(--u)); line-height: 1.3; padding-bottom: calc(5 * var(--u)); border-bottom: max(1px, calc(1 * var(--u))) solid rgba(255, 255, 255, 0.4); transition: border-color 0.2s; }
+.fin-actions a:hover { border-bottom-color: #fff; }
+
+/* ---------- Galerie : livrées ---------- */
+.liv-row { display: flex; justify-content: flex-end; align-items: center; gap: calc(14 * var(--u)); }
+.liv-row > span { margin-right: calc(4 * var(--u)); }
+.liv {
+  width: calc(24 * var(--u)); height: calc(24 * var(--u)); padding: 0; border: 0; border-radius: 50%;
+  background: linear-gradient(90deg, var(--c) 0 36%, var(--s) 36% 64%, var(--c) 64%);
+  box-shadow: 0 0 0 max(1px, calc(1.5 * var(--u))) rgba(255, 255, 255, 0.55); transition: box-shadow 0.2s, transform 0.2s;
+}
+.liv:hover { transform: scale(1.1); }
+.liv[aria-checked='true'] { box-shadow: 0 0 0 calc(3 * var(--u)) var(--bg), 0 0 0 calc(5 * var(--u)) #fff; }
+.liv-name { margin-top: calc(14 * var(--u)); line-height: 1.3; }
+.liv-note { margin-top: calc(4 * var(--u)); margin-left: auto; max-width: calc(400 * var(--u)); line-height: 1.45; opacity: 0.85; }

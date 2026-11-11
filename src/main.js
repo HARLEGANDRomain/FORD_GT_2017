@@ -10,7 +10,7 @@ import { MOBILE } from './config/device.js';
 
 import * as THREE from 'three';
 import gsap from 'gsap';
-import { SCREENS, COLORS, MOTION, camOf } from './config/screens.js';
+import { SCREENS, GALLERY, GALLERY_INDEX, NIGHT, COLORS, MOTION, camOf } from './config/screens.js';
 import { createStage } from './scene/stage.js';
 import { loadCar, glassLight } from './scene/car.js';
 import { createBloom } from './scene/bloom.js';
@@ -22,8 +22,9 @@ const $ = (s, r = document) => r.querySelector(s);
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const N = SCREENS.length;      // 10 écrans de défilement (la galerie regroupe 10-11-12)
+const N = SCREENS.length;      // 11 écrans de défilement (la galerie regroupe 10-11-12, puis l'épilogue)
 const LAST = N - 1;
+const GAL = GALLERY_INDEX;     // écran Galerie (caméra libre)
 const debug = new URLSearchParams(location.search).has('debug');
 
 // ---------- DOM ----------
@@ -57,7 +58,8 @@ const states = [];
 states[1] = rig.toState(camOf(SCREENS[1]));
 states[0] = states[1];
 states[2] = states[1];
-for (let i = 3; i < LAST; i++) states[i] = rig.toState(camOf(SCREENS[i]));
+for (let i = 3; i < GAL; i++) states[i] = rig.toState(camOf(SCREENS[i]));
+for (let i = GAL + 1; i <= LAST; i++) states[i] = SCREENS[i].cam === 'same-as-2' ? states[1] : rig.toState(camOf(SCREENS[i]));
 
 // ---------- Découpe du canvas (état « Détails ») ----------
 let clipK = 0, clipRect = null;
@@ -71,7 +73,7 @@ function applyClip() {
 const setClip = (k, rect) => { clipK = k; if (rect) clipRect = rect; applyClip(); };
 
 stage.setDark(1); // miniatures rendues studio allumé
-const gallery = createGallery({ root: front[10], rig, carApi, setClip, stage });
+const gallery = createGallery({ root: front[GAL + 1], rig, carApi, setClip, stage });
 gallery.init();
 if (MOBILE) { const h = $('#g-hint'); if (h) h.textContent = 'Glisser pour tourner · Pincer pour zoomer'; }
 
@@ -91,15 +93,15 @@ let phase = 0, busy = false, introDone = false, introTl = null, glide = null, gl
 const FREE = new URLSearchParams(location.search).get('scroll') !== 'phases';   // ?scroll=phases : ancien mode, un geste = une phase (debug)
 let freeT = 0, freeM = 0, freeLock = 0, freeLocked = -1, freeLast = 0, freeFresh = false, freePrev = 0;                             // position visée (s la rejoint en douceur)
 
+const stateAt = (k) => (k === GAL ? gallery.cam : states[k]);
 const camBase = (v) => {
   const n = Math.min(Math.floor(v), LAST);
-  if (n >= LAST) return gallery.cam;
-  const a = states[n], b = n + 1 === LAST ? gallery.cam : states[n + 1];
-  return rig.lerp(a, b, v - n);
+  if (n >= LAST) return stateAt(LAST);
+  return rig.lerp(stateAt(n), stateAt(n + 1), v - n);
 };
 
 const hashToIndex = Object.fromEntries(SCREENS.map((sc, i) => [sc.hash, i]));
-const NAV_OF = (i) => (i >= 9 ? 'galerie' : i >= 6 ? 'performances' : i >= 3 ? 'histoire' : null);
+const NAV_OF = (i) => (i > GAL ? null : i === GAL ? 'galerie' : i >= 6 ? 'performances' : i >= 3 ? 'histoire' : null);
 
 // ---------- Écran actif : le texte arrive quand la caméra est (presque) arrêtée ----------
 let active = -1;
@@ -108,13 +110,13 @@ function setActive(a) {
   const prev = active;
   active = a;
   if (prev >= 1) groupsOf(prev).forEach((g) => hideGroup(g));
-  if (prev === LAST) { gallery.leave(); gallery.reset(); }
+  if (prev === GAL) { gallery.leave(); gallery.reset(); }
   if (a >= 1) {
     groupsOf(a).forEach((g) => showGroup(g, 0.1));
-    if (a === LAST) gallery.enter();
+    if (a === GAL) gallery.enter();
     if (a >= MIN_PHASE) history.replaceState(null, '', `#${SCREENS[a].hash}`);
     const nav = NAV_OF(a);
-    header.querySelectorAll('nav a').forEach((l) => (nav && l.getAttribute('href') === `#${nav}` ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')));
+    header.querySelectorAll('#main-nav a').forEach((l) => (nav && l.getAttribute('href') === `#${nav}` ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')));
   }
 }
 
@@ -135,7 +137,7 @@ function go(i) {
   if (far) {
     glide = gsap.timeline({ onComplete: () => { busy = false; } })
       .to(veil, { opacity: 1, duration: MOTION.veilIn, ease: 'power1.in' })
-      .add(() => { if (from === LAST) gallery.select(0, { instant: true }); s = freeT = freeM = i; freeLocked = i; })
+      .add(() => { if (from === GAL) gallery.select(0, { instant: true }); s = freeT = freeM = i; freeLocked = i; })
       .to(veil, { opacity: 0, duration: MOTION.veilOut, ease: 'power1.out' }, '+=0.08')
       .add(() => setActive(i), '-=0.25');
     return;
@@ -162,7 +164,7 @@ window.addEventListener('wheel', (e) => {
   lastWheel = now;
   if (!introDone) { skipIntro(); return; }
   // Galerie en caméra libre : Ctrl + molette (ou pincement du pavé tactile) zoome ; la molette seule reste la navigation entre phases
-  if (active === LAST && gallery.canOrbit && e.ctrlKey) { e.preventDefault(); gallery.zoomBy(e.deltaY); return; }
+  if (active === GAL && gallery.canOrbit && e.ctrlKey) { e.preventDefault(); gallery.zoomBy(e.deltaY); return; }
   if (FREE) {
     if (busy && glideFar) return;                          // fondu d'un saut lointain : on attend
     if (busy) { glide?.kill(); busy = false; setActive(-1); }  // un geste de molette reprend la main sur un saut animé
@@ -183,7 +185,7 @@ let touchY = null;
 let touchPrev = 0;
 window.addEventListener('touchstart', (e) => { touchY = touchPrev = e.touches[0].clientY; }, { passive: true });
 window.addEventListener('touchmove', (e) => {
-  if (!FREE || !introDone || sourcesOpen || menuOpen() || touchY === null || (busy && glideFar) || active === LAST && gallery.canOrbit) return;
+  if (!FREE || !introDone || sourcesOpen || menuOpen() || touchY === null || (busy && glideFar) || active === GAL && gallery.canOrbit) return;
   if (performance.now() < freeLock) { touchPrev = e.touches[0].clientY; return; }
   if (busy) { glide?.kill(); busy = false; setActive(-1); }
   const y = e.touches[0].clientY;
@@ -196,7 +198,7 @@ window.addEventListener('touchend', (e) => {
   const dy = touchY - e.changedTouches[0].clientY;
   touchY = null;
   if (Math.abs(dy) < 50) return;
-  if (!introDone) skipIntro(); else if (active !== LAST) step(Math.sign(dy));
+  if (!introDone) skipIntro(); else if (active !== GAL) step(Math.sign(dy));
 }, { passive: true });
 
 window.addEventListener('keydown', (e) => {
@@ -242,10 +244,31 @@ document.addEventListener('click', (e) => {
     if (i !== undefined) go(i);
     return;
   }
-  if (menuOpen() || e.target.closest('button, #site-header, .hotspot, #thumbs, [data-g-go]')) return;
+  if (menuOpen() || e.target.closest('a, button, #site-header, .hotspot, #thumbs, [data-g-go]')) return;
   if (!introDone) { skipIntro(); return; }
+  if (active === GAL) return;                // galerie : le clic sert à tourner autour de la voiture, pas à avancer
   step(1);
 });
+
+// Ancre modifiée à la main ou par l'historique : on suit
+window.addEventListener('hashchange', () => {
+  const i = hashToIndex[location.hash.slice(1)];
+  if (i !== undefined && i >= MIN_PHASE && introDone && i !== phase) go(i);
+});
+
+// ---------- Frise des chapitres (en-tête) : repère de position + navigation ----------
+const frise = $('#frise');
+const friseLinks = [...frise.querySelectorAll('a[data-i]')];
+let friseCur = -1;
+function updateFrise() {
+  const cur = Math.round(clamp(s, MIN_PHASE, LAST)) - MIN_PHASE;
+  if (cur === friseCur) return;
+  friseCur = cur;
+  friseLinks.forEach((l, k) => {
+    l.classList.toggle('is-past', k < cur);
+    if (k === cur) l.setAttribute('aria-current', 'step'); else l.removeAttribute('aria-current');
+  });
+}
 
 // ---------- Intro cinématique (écrans 01 → 03), entièrement automatique ----------
 function setLook(o) { Object.assign(L, o); }
@@ -309,7 +332,7 @@ function finishIntro(at = 2) {
 function replayIntro() {
   if (introTl && !introDone) return;
   gsap.to(veil, { opacity: 1, duration: 0.3, onComplete: () => {
-    if (active === LAST) gallery.select(0, { instant: true });
+    if (active === GAL) gallery.select(0, { instant: true });
     setActive(-1);
     playIntro();
     gsap.to(veil, { opacity: 0, duration: 0.5, delay: 0.1 });
@@ -344,19 +367,25 @@ function frame(now) {
   last = now;
   if (FREE) freeTick(dt);
 
-  tmpC.copy(cinema).lerp(brand, clamp(L.bg));
+  // Épilogue : entre la galerie et le dernier écran, le studio s'éteint et les phares se rallument (miroir de l'intro)
+  const night = introDone ? smooth(GAL + 0.2, LAST - 0.05, s) : 0;
+  const mix = (k) => L[k] + (NIGHT[k] - L[k]) * night;
+  const look = night > 0 ? { lights: mix('lights'), dark: mix('dark'), bg: mix('bg'), idle: mix('idle') } : L;
+  updateFrise();
+
+  tmpC.copy(cinema).lerp(brand, clamp(look.bg));
   const bg = `#${tmpC.getHexString()}`;
   if (bg !== lastBg) { document.documentElement.style.setProperty('--bg', bg); lastBg = bg; }
-  if (active === LAST) gallery.update(dt);
-  stage.setDark(L.dark);
-  glassLight.value = Math.min(1, L.dark);
-  carApi.setLights(L.lights, L.idle);
+  if (active === GAL) gallery.update(dt);
+  stage.setDark(look.dark);
+  glassLight.value = Math.min(1, look.dark);
+  carApi.setLights(look.lights, look.idle);
   header.style.opacity = String(L.hdr);
   header.style.visibility = L.hdr < 0.02 ? 'hidden' : 'visible';
 
   let st = override ?? camBase(Math.max(s, 1));
   if (!override && L.push < 1) st = { ...st, dist: st.dist * (1 + MOTION.intro.pushAmount * (1 - L.push)) };
-  const key = Object.values(st).map((v) => v.toFixed(3)).join('|') + stage.size.w + 'x' + stage.size.h + '|' + L.lights.toFixed(3) + '|' + L.dark.toFixed(3) + '|' + L.idle.toFixed(3);
+  const key = Object.values(st).map((v) => v.toFixed(3)).join('|') + stage.size.w + 'x' + stage.size.h + '|' + look.lights.toFixed(3) + '|' + look.dark.toFixed(4) + '|' + look.idle.toFixed(3);
   if (key !== lastKey) { rig.apply(st); stage.invalidate(); lastKey = key; }
   if (stage.renderIfNeeded()) bloom.render(carApi.lightState.guide, carApi.lightState.bars);
   requestAnimationFrame(frame);
@@ -372,7 +401,7 @@ requestAnimationFrame((t) => { last = t; frame(t); });
 
 // API de test / calibrage
 window.__ford = {
-  stage, rig, carApi, gallery, go, L, setActive,
+  stage, rig, carApi, gallery, go, L, setActive, gsap,
   get introTl() { return introTl; },
   get introDone() { return introDone; },
   get busy() { return busy; },

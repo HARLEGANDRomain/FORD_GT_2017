@@ -11,7 +11,7 @@
 
 Conformément à la licence, ce fichier modifié reste sous CC BY-NC-SA 4.0 : usage non commercial, avec attribution, partage dans les mêmes conditions.
 
-## Image de la GT40 (`public/img/gt40-side.png`)
+## Image de la GT40 (`public/img/gt40-side.webp`)
 
 Rendu réalisé à partir du modèle « Ford GT40 | www.vecarz.com » de VeCarz (Sketchfab, compte « vecarz ») :
 https://sketchfab.com/3d-models/ford-gt40-wwwvecarzcom-b21723e211da4b138a9534dfa6ebefde

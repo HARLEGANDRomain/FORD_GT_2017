@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ford GT 2017 — L’histoire d’une légende</title>
-  <meta name="description" content="Une traversée en 12 écrans de l’histoire de la Ford GT 2017 : de la GT40 victorieuse au Mans à la dernière LM Edition, avec un modèle 3D explorable." />
+  <meta name="description" content="Une traversée en 13 écrans de l’histoire de la Ford GT 2017 : de la GT40 victorieuse au Mans à la dernière LM Edition, avec un modèle 3D explorable." />
   <meta name="theme-color" content="#3366b4" />
   <link rel="preload" href="./models/ford-gt.glb" as="fetch" crossorigin />
   <link rel="icon" href="./img/ford-logo.png" />
@@ -23,7 +23,7 @@
     </div>
     <div class="scr" data-s="4">
       <div class="pos ts-gt-chiffres-cles-xxl-heritage lh-96 al-r nowrap c-deep" data-a="r" data-mo="poster" style="--x:667;--y:361;--w:566">GT40</div>
-      <div class="pos gt40-side" data-a="r" data-mo="fade" style="--x:772;--y:196;--w:460"><img src="./img/gt40-side.png" alt="" width="1000" height="347" /></div>
+      <div class="pos gt40-side" data-a="r" data-mo="fade" style="--x:772;--y:196;--w:460"><img src="./img/gt40-side.webp" alt="" width="1420" height="493" /></div>
     </div>
     <div class="scr" data-s="5">
       <div class="pos ts-gt-chiffres-cles-l-annee lh-96 al-r nowrap c-deep" data-a="l" data-mo="poster" style="--x:11;--y:443;--w:286">2015</div>
@@ -90,9 +90,10 @@
       <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:450">LA FABRICATION</div>
       <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 al-c nowrap" data-a="c" data-mo="label" style="--x:330;--y:139;--w:620">MARKHAM, ONTARIO / CANADA</div>
       <h2 id="t6" class="pos ts-gt-h1-compact lh-96 al-r nowrap" data-a="r" data-mo="poster" style="--x:626;--y:214;--w:606">RARE.<br />PAR NATURE.</h2>
-      <p class="pos ts-gt-corps-m-recit lh-155 al-r" data-a="r" data-mo="para" style="--x:879;--y:523;--w:354">À Markham, la production débute en 2016. Le rythme annoncé est de 250 voitures par an, pour une série d’abord limitée à 1 000 unités. La rareté fait partie de son histoire.</p>
+      <p class="pos ts-gt-corps-m-recit lh-155 al-r" data-a="r" data-mo="para" style="--x:879;--y:523;--w:354">À Markham, la production débute en 2016. Le rythme annoncé est de 250 voitures par an, pour une série d’abord limitée à 1 000 unités. Elle ne s’achète pas, elle se mérite : pour les 500 premières, Ford reçoit 6 506 candidatures.</p>
       <div class="pos rule" data-bot data-a="c" data-mo="rule" style="--x:48;--y:883;--w:1184"></div>
-      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="c" data-mo="label" style="--x:48;--y:931.5;--w:340">EXEMPLAIRES AU TOTAL<br />2016 — 2022</div>
+      <div class="pos num-production lh-96 nowrap" data-a="c" data-mo="num" data-count="1350" style="--x:44;--y:903;--w:440">1&#8239;350</div>
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="c" data-mo="label" style="--x:48;--y:1008;--w:440">EXEMPLAIRES AU TOTAL · 2016 — 2022</div>
       <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="c" data-mo="label" style="--x:542;--y:903;--w:691">OCTOBRE 2018 / 350 DE PLUS</div>
       <p class="pos ts-gt-corps-l-recit lh-155" data-a="c" data-mo="para" style="--x:542;--y:938;--w:691">Face à une très forte demande, Ford annonce 350 exemplaires supplémentaires. Produits entre 2020 et 2022, ils portent le total à 1 350 Ford GT.</p>
     </section>
@@ -176,7 +177,16 @@
         </div>
       </div>
 
+      <a id="g-next" class="pos ts-gt-interface-navigation al-r nowrap" href="#fin" data-a="r" data-mo="fade" style="--x:932;--y:137;--w:300">Conclusion <span aria-hidden="true">→</span></a>
+
       <p id="g-hint" class="pos ts-gt-legendes-petite al-r nowrap" data-a="r" data-mo="fade" style="--x:732;--y:866;--w:500">Glisser pour tourner · Ctrl + molette pour zoomer</p>
+
+      <!-- Livrées : pastilles générées par gallery.js depuis LIVERIES (config/screens.js) -->
+      <div id="liveries" class="pos al-r" data-a="r" data-mo="fade" style="--x:732;--y:900;--w:500">
+        <div class="liv-row" role="radiogroup" aria-label="Livrée"><span class="ts-gt-reperes-surtitre-chapitre lh-140">LIVRÉE</span></div>
+        <p class="liv-name ts-gt-interface-navigation" aria-live="polite"></p>
+        <p class="liv-note ts-gt-legendes-petite"></p>
+      </div>
 
       <!-- Bande de miniatures -->
       <div class="pos rule" data-a="l" data-mo="rule" style="--x:48;--y:840;--w:1184"></div>
@@ -187,12 +197,38 @@
         <button class="thumb" role="tab" data-g-go="3" aria-selected="false" style="--tx:600"><span class="thumb-img"><img alt="" /></span><span class="thumb-bar"></span><span class="thumb-label ts-gt-legendes-petite">Détails</span></button>
       </div>
     </section>
+
+    <!-- 13 — Épilogue : retour au noir, phares allumés (miroir de l’intro) -->
+    <section class="scr" data-s="11" aria-labelledby="t13">
+      <div class="pos ts-gt-reperes-surtitre-chapitre lh-140 nowrap" data-a="l" data-mo="label" style="--x:48;--y:139;--w:700">ÉPILOGUE / 1966 — 2022</div>
+      <h2 id="t13" class="pos ts-gt-h1-centre lh-96 al-c nowrap" data-a="c" data-mo="poster" style="--x:178;--y:196;--w:925">LE NOM DEMEURE.</h2>
+      <p class="pos ts-gt-corps-l-recit lh-155 al-c" data-a="c" data-mo="para" style="--x:290;--y:330;--w:700">De la GT40 victorieuse au Mans à la dernière LM Edition, 1 350 voitures ont porté cet héritage sur la route. La production s’est arrêtée en 2022 ; l’histoire, elle, se transmet.</p>
+      <div class="pos rule" data-bot data-a="c" data-mo="rule" style="--x:48;--y:883;--w:1184"></div>
+      <div class="pos fin-actions ts-gt-interface-navigation" data-a="c" data-mo="fade" style="--x:48;--y:915;--w:1184">
+        <a href="#intro"><span aria-hidden="true">↺</span> Revoir l’intro</a>
+        <a href="#galerie">Retour à la galerie</a>
+        <a href="#sources" aria-haspopup="dialog">Sources et crédits</a>
+        <a href="https://harlegandromain.github.io/Portfolio/" target="_blank" rel="noopener">Voir mon portfolio <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="pos ts-gt-reperes-surtitre-chapitre lh-140 al-c" data-a="c" data-mo="fade" style="--x:48;--y:1000;--w:1184">UN PROJET DE ROMAIN HARLEGAND · CONCEPTION UX/UI ET DÉVELOPPEMENT</p>
+    </section>
   </main>
 
   <!-- ===================== EN-TÊTE (écrans 02 → 12) ===================== -->
   <header id="site-header">
     <a class="logo" href="#intro" aria-label="Ford — retour au début"><img src="./img/ford-logo.png" alt="Ford" /></a>
     <button class="menu-btn ts-gt-interface-bouton" type="button" aria-expanded="false" aria-controls="main-nav"><span class="menu-lab">Menu</span><span class="menu-ico" aria-hidden="true"></span></button>
+    <div id="frise" role="navigation" aria-label="Chapitres du récit">
+      <a href="#presentation" data-i="2" title="La Ford GT">Ford GT</a>
+      <a href="#histoire" data-i="3" title="1966 — La course en héritage">1966</a>
+      <a href="#nouvelle-ere" data-i="4" title="2015 — Dessinée pour une nouvelle ère">2015</a>
+      <a href="#fabrication" data-i="5" title="2016 — Rare par nature">2016</a>
+      <a href="#performances" data-i="6" title="2017 — De la vision à la route">2017</a>
+      <a href="#le-mans" data-i="7" title="Le Mans 2016 — Le Mans, encore">Le Mans</a>
+      <a href="#derniere-edition" data-i="8" title="2022 — L’histoire continue">2022</a>
+      <a href="#galerie" data-i="9" title="Galerie — Sous tous les angles">Galerie</a>
+      <a href="#fin" data-i="10" title="Épilogue">Fin</a>
+    </div>
     <nav id="main-nav" aria-label="Navigation principale">
       <a class="ts-gt-interface-navigation" href="#histoire">Histoire</a>
       <a class="ts-gt-interface-navigation" href="#performances">Performances</a>
@@ -211,6 +247,9 @@
         <li><a href="https://en.wikipedia.org/wiki/Ford_GT" target="_blank" rel="noopener">Ford GT — Wikipedia</a></li>
         <li><a href="https://franco.wiki/fr/Ford_GT_(2017).html" target="_blank" rel="noopener">Ford GT (2017) — franco.wiki</a></li>
         <li><a href="https://www.kbb.com/car-news/2017-ford-gt-confirmed-with-647-horsepower" target="_blank" rel="noopener">2017 Ford GT confirmed with 647 horsepower — Kelley Blue Book</a></li>
+        <li><a href="https://www.businesswire.com/news/home/20160512006703/en/6506-Apply-to-Own-All-New-Ford-GT-in-a-Month-Almost-200000-Configure-Ford-GT-of-Their-Dreams" target="_blank" rel="noopener">6,506 Apply to Own All-New Ford GT in a Month — communiqué Ford (Business Wire), mai 2016</a></li>
+        <li><a href="https://media.ford.com/content/fordmedia/feu/en/news/2017/05/12/racing-to-the-future--how-ford-created-the-gt-supercar-to-test-t.html" target="_blank" rel="noopener">Racing to the Future: How Ford Created the GT Supercar — communiqué Ford, mai 2017 (aileron actif)</a></li>
+        <li><a href="https://www.topgear.com/car-news/supercars/heres-how-ford-gts-aero-works" target="_blank" rel="noopener">Here’s how the Ford GT’s aero works — Top Gear (arches, feux arrière)</a></li>
         <li><a href="https://fr.motor1.com/news/347407/video-ford-gt-340-kmh/" target="_blank" rel="noopener">La Ford GT poussée à plus de 340 km/h — Motor1 France</a></li>
         <li><a href="https://fordauthority.com/fmc/ford/ford-gt/ford-gt-special-editions" target="_blank" rel="noopener">Ford GT Special Editions — Ford Authority</a></li>
         <li><a href="https://www.carscoops.com/?p=2388537" target="_blank" rel="noopener">2022 Ford GT Alan Mann Heritage Edition — Carscoops</a></li>

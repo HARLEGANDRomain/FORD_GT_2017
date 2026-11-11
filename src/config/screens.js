@@ -57,7 +57,16 @@ export const SCREENS = [
 
   // 10 · 11 · 12 : un seul écran de défilement, trois (quatre) états pilotés par les miniatures.
   { n: 10, id: 'galerie', hash: 'galerie', ref: '10. Galerie - Vue d\'ensemble@2x.png', cam: 'gallery' },
+
+  // 13 · Épilogue : même cadrage de face que l'écran 02, studio éteint et phares allumés (miroir de l'intro).
+  { n: 13, id: 'fin', hash: 'fin', ref: null, cam: 'same-as-2', look: 'night' },
 ];
+
+/** Index de l'écran Galerie dans SCREENS (l'épilogue vient après). */
+export const GALLERY_INDEX = SCREENS.findIndex((sc) => sc.cam === 'gallery');
+
+/** Apparence « nuit » de l'épilogue : mêmes grandeurs que l'intro (voir L dans main.js). */
+export const NIGHT = { lights: 1, dark: 0.008, bg: 0, idle: 1 };
 
 /** États de la galerie (miniatures). `thumb` = cadrage de la miniature (rendu 16:9 depuis le même modèle). */
 export const GALLERY = [
@@ -86,15 +95,49 @@ export const GALLERY = [
  * de référence du modèle) et une NORMALE sortante : il n'est affiché que s'il est dans le champ ET tourné vers la caméra.
  * `detail: true` → un clic mène à l'état « Détails » (roue & frein avant).
  */
+// Fiches des repères : un clic sur un repère cadre la caméra dessus (même mise en page que l'écran 12) et affiche la fiche.
+//   cam = angle de vue de la fiche (le pivot est le repère lui-même) ; mdist = distance sur mobile ; wing = déploie l'aileron.
+const INFO = {
+  arches: { title: 'Arches <br class="dbr" />aérodynamiques', text: 'Entre le cockpit en goutte d’eau et les ailes arrière, deux arches laissent l’air traverser la carrosserie et le guident vers l’aileron. Elles sont creuses : l’air comprimé par les turbos y circule avant de rejoindre le moteur.' },
+  phares: { title: 'Signature <br class="dbr" />lumineuse', text: 'Les phares à LED dessinent un C ouvert vers l’extérieur. C’est lui que l’on voit en premier, seul dans le noir, au tout début de ce récit.' },
+  roue:   { title: 'Roue &amp; Frein <br class="dbr" />Avant', text: 'Les branches sombres de la jante dévoilent le disque de frein et son étrier doré. Un jeu de contrastes qui souligne le dessin de la roue avant.' },
+  aileron: { title: 'Aileron <br class="dbr" />actif', text: 'Escamoté dans la poupe, il se déploie avec la vitesse et change de profil pour augmenter l’appui. Au freinage, il se redresse et sert d’aérofrein.' },
+  echappements: { title: 'Double sortie <br class="dbr" />centrale', text: 'Les deux sorties du V6 biturbo sont regroupées au centre de la poupe. De part et d’autre, les feux ronds sont creux : ils évacuent l’air chaud des échangeurs.' },
+};
+
 export const HOTSPOTS = [
-  { id: 'sideR',  label: 'Ligne latérale', ray: { origin: [0.25, 0.62, 4], dir: [0, 0, -1] },  normal: [0, 0, 1] },
-  { id: 'sideL',  label: 'Ligne latérale', ray: { origin: [0.1, 0.62, -4], dir: [0, 0, 1] },   normal: [0, 0, -1] },
-  { id: 'headR',  label: 'Phares',         anchor: 'headlightR',                                normal: [0.75, 0.15, 0.65] },
-  { id: 'headL',  label: 'Phares',         anchor: 'headlightL',                                normal: [0.75, 0.15, -0.65] },
-  { id: 'wheelR', label: 'Roue',           anchor: 'frontWheelR', offset: [0, 0, 0.12],        normal: [0, 0, 1],  detail: true },
-  { id: 'wheelL', label: 'Roue',           anchor: 'frontWheelL', offset: [0, 0, -0.12],       normal: [0, 0, -1], detail: true },
-  { id: 'wing',   label: 'Aileron',        ray: { origin: [-6, 0.86, 0], dir: [1, 0, 0] },     normal: [-1, 0.25, 0] },
-  { id: 'exhaust', label: 'Échappements',  ray: { origin: [-6, 0.6, 0], dir: [1, 0, 0] },      normal: [-1, 0, 0] },
+  { id: 'sideR',  label: 'Arches',        ray: { origin: [-1.05, 0.88, 4], dir: [0, 0, -1] },  normal: [-0.25, 0.3, 1],
+    info: { ...INFO.arches, cam: { az: 312, el: 16, dist: 5.4, fov: 28 }, mdist: 6.4 } },
+  { id: 'sideL',  label: 'Arches',        ray: { origin: [-1.05, 0.88, -4], dir: [0, 0, 1] },  normal: [-0.25, 0.3, -1],
+    info: { ...INFO.arches, cam: { az: 48, el: 16, dist: 5.4, fov: 28 }, mdist: 6.4 } },
+  { id: 'headR',  label: 'Phares',         anchor: 'headlightR',                                normal: [0.75, 0.15, 0.65],
+    info: { ...INFO.phares, cam: { az: 208, el: 7, dist: 4.6, fov: 28 }, mdist: 5.4 } },
+  { id: 'headL',  label: 'Phares',         anchor: 'headlightL',                                normal: [0.75, 0.15, -0.65],
+    info: { ...INFO.phares, cam: { az: 152, el: 7, dist: 4.6, fov: 28 }, mdist: 5.4 } },
+  { id: 'wheelR', label: 'Roue',           anchor: 'frontWheelR', offset: [0, 0, 0.12],        normal: [0, 0, 1],
+    info: { ...INFO.roue, cam: { az: 268, el: 3, dist: 6.7, fov: 28 }, mdist: 6 } },
+  { id: 'wheelL', label: 'Roue',           anchor: 'frontWheelL', offset: [0, 0, -0.12],       normal: [0, 0, -1],
+    info: { ...INFO.roue, cam: { az: 92, el: 3, dist: 6.7, fov: 28 }, mdist: 6 } },
+  { id: 'wing',   label: 'Aileron',        anchor: 'wing',                                      normal: [-1, 0.6, 0],
+    info: { ...INFO.aileron, cam: { az: 38, el: 15, dist: 5.6, fov: 28 }, mdist: 6.6, wing: true } },
+  { id: 'exhaust', label: 'Échappements',  ray: { origin: [-6, 0.6, 0], dir: [1, 0, 0] },      normal: [-1, 0, 0],
+    info: { ...INFO.echappements, cam: { az: 0, el: 5, dist: 5.0, fov: 28 }, mdist: 5.8 } },
+];
+/** Repère affiché par la miniature « Détails ». */
+export const DEFAULT_SPOT = 'wheelL';
+/** Point d'ancrage de la fiche : où le repère se projette dans le cadre (bureau : px de maquette ; mobile : [x px, y fraction]). */
+export const SPOT_ANCHOR = { desktop: [380, 510], mobile: [195, 0.38] };
+
+/**
+ * Livrées proposées dans la galerie. La première est la teinte de série (couleur du modèle, sans bandes).
+ * color / stripe = couleurs sRGB ; band = [bord intérieur, bord extérieur] des bandes en m depuis l'axe (−1 = bande centrale pleine).
+ * Les numéros de course et cocardes des vraies Heritage Edition ne sont pas reproduits.
+ */
+export const LIVERIES = [
+  { key: 'serie', name: 'Liquid Blue', note: 'La teinte de série, celle de ce récit.', swatch: '#0b2f8a' },
+  { key: 'h66', name: '’66 Heritage Edition', note: 'Noir et bandes argent : hommage à la GT40 Mk II n° 2, victorieuse au Mans en 1966.', color: '#0a0a0c', stripe: '#b9bdc4', band: [0.07, 0.27] },
+  { key: 'h67', name: '’67 Heritage Edition', note: 'Rouge et bandes blanches : hommage à la GT40 Mk IV n° 1, victorieuse au Mans en 1967.', color: '#b50a12', stripe: '#f4f4f4', band: [0.07, 0.27] },
+  { key: 'h68', name: '’68 Heritage Edition', note: 'Bleu et orange Gulf : hommage à la GT40 n° 9, victorieuse au Mans en 1968.', color: '#8ec3e6', stripe: '#f2691c', band: [-1, 0.2] },
 ];
 
 /** Caméra libre de la galerie : rotation complète autour de la voiture, élévation et zoom bornés. */

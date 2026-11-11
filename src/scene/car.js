@@ -44,6 +44,7 @@ export async function loadCar(url, onProgress) {
   car.updateMatrixWorld(true);
 
   // --- matériaux ---
+  let paint = null;
   root.traverse((o) => {
     if (!o.isMesh) return;
     o.frustumCulled = true;
@@ -52,6 +53,8 @@ export async function loadCar(url, onProgress) {
     if (n.includes('Paint_Material')) {
       Object.assign(m, { clearcoat: 1, clearcoatRoughness: 0.035, envMapIntensity: 1.0 });
       m.color.setRGB(0.0, 0.098, 0.345); // bleu du rendu Blender (légèrement moins violet que la valeur du fichier)
+      addStripes(m);
+      paint = m;
       m.needsUpdate = true;
     } else if (n.includes('Window_Material') || n === 'ORANGE_GLASS' || n === 'RED_GLASS') {
       // la transmission de three échantillonne la scène 3D, pas le fond CSS : on passe en transparence simple
@@ -97,7 +100,119 @@ export async function loadCar(url, onProgress) {
 
   const led = extractLeds(car);
   const lights = buildHeadlights(led);
-  return { car, root, anchors, led, lightState: lights.state, setLights: lights.set, raycastPoint: (ray) => raycastSurface(car, ray) };
+  const wing = splitWing(car);
+  anchors.wing = wing.center;
+  const basePaint = paint ? paint.color.clone() : new THREE.Color(0x0b2f8a);
+  return {
+    car, root, anchors, led, lightState: lights.state, setLights: lights.set, raycastPoint: (ray) => raycastSurface(car, ray),
+    /** Aileron actif : 0 = escamoté (affleurant), 1 = déployé. */
+    setWing: wing.set,
+    /** Teinte de série (couleur linéaire du matériau d'origine). */
+    basePaint,
+    /** Livrée : couleur de caisse + bandes (k = 0 → sans bandes, 1 → bandes pleines). `band` = [bord intérieur, bord extérieur] en m depuis l'axe. */
+    setLivery({ color, stripe, band, k }) {
+      if (!paint) return;
+      if (color) paint.color.copy(color);
+      if (stripe) stripes.uStripeColor.value.copy(stripe);
+      if (band) stripes.uStripeBand.value.set(band[0], band[1]);
+      if (k !== undefined) stripes.uStripeOn.value = k;
+    },
+  };
+}
+
+/**
+ * Bandes de livrée, peintes dans le shader de la carrosserie (le modèle n'a ni texture ni dépliage UV exploitable sur la peinture) :
+ * une bande = un intervalle de distance à l'axe longitudinal de la voiture, appliqué aux faces qui ne regardent pas vers le sol.
+ * Elle court donc du nez à l'aileron en passant par le toit, comme les bandes des Heritage Edition.
+ */
+const stripes = { uStripeColor: { value: new THREE.Color(0xffffff) }, uStripeBand: { value: new THREE.Vector2(0.07, 0.27) }, uStripeOn: { value: 0 } };
+function addStripes(m) {
+  m.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, stripes);
+    sh.vertexShader = 'varying vec3 vCarPos;\nvarying vec3 vCarN;\n' + sh.vertexShader.replace('#include <project_vertex>', `#include <project_vertex>
+      vCarPos = (modelMatrix * vec4(transformed, 1.0)).xyz;
+      vCarN = normalize(mat3(modelMatrix) * objectNormal);`);
+    sh.fragmentShader = 'uniform vec3 uStripeColor;\nuniform vec2 uStripeBand;\nuniform float uStripeOn;\nvarying vec3 vCarPos;\nvarying vec3 vCarN;\n' + sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
+      {
+        float az = abs(vCarPos.z), e = 0.004;
+        float band = smoothstep(uStripeBand.x - e, uStripeBand.x + e, az) * (1.0 - smoothstep(uStripeBand.y - e, uStripeBand.y + e, az));
+        float ny = normalize(vCarN).y;
+        // les bandes descendent sur le nez (faces presque verticales) mais s'arrêtent au bord du pont arrière
+        float up = mix(smoothstep(0.1, 0.35, ny), smoothstep(-0.35, -0.05, ny), step(1.5, vCarPos.x));
+        diffuseColor.rgb = mix(diffuseColor.rgb, uStripeColor, band * up * uStripeOn);
+      }`);
+  };
+  m.customProgramCacheKey = () => 'paint-stripes';
+}
+
+/**
+ * Aileron actif. Dans le modèle, l'aileron fait partie du mesh de carrosserie : on l'isole en cherchant les îlots de
+ * triangles (composantes connexes) entièrement contenus dans sa zone, à l'arrière du pont, puis on le place sous un pivot
+ * situé sur son bord d'attaque. `set(k)` le soulève et l'incline (bord de fuite vers le haut).
+ */
+const WING_ZONE = new THREE.Box3(new THREE.Vector3(-2.34, 0.72, -0.6), new THREE.Vector3(-1.92, 0.82, 0.6));
+const WING_LIFT = 0.115, WING_TILT = 0.15; // m, rad
+
+function splitWing(car) {
+  const fallback = { set() {}, center: new THREE.Vector3(-2.12, 0.8, 0) };
+  let body = null;
+  car.updateMatrixWorld(true);
+  car.traverse((o) => { if (o.isMesh && !Array.isArray(o.material) && (o.material.name || '').includes('Paint_Material')) body = o; });
+  if (!body?.geometry.index) return fallback;
+
+  const g = body.geometry, pos = g.attributes.position, idx = g.index.array, n = pos.count;
+  // positions monde + soudure des sommets confondus (les coutures de normales dédoublent les sommets)
+  const P = new Float32Array(n * 3), weld = new Int32Array(n), seen = new Map(), v = new THREE.Vector3();
+  for (let i = 0; i < n; i++) {
+    v.fromBufferAttribute(pos, i).applyMatrix4(body.matrixWorld);
+    P[i * 3] = v.x; P[i * 3 + 1] = v.y; P[i * 3 + 2] = v.z;
+    const key = `${Math.round(v.x * 2000)}|${Math.round(v.y * 2000)}|${Math.round(v.z * 2000)}`;
+    if (!seen.has(key)) seen.set(key, i);
+    weld[i] = seen.get(key);
+  }
+  const parent = new Int32Array(n).map((_, i) => i);
+  const find = (a) => { while (parent[a] !== a) { parent[a] = parent[parent[a]]; a = parent[a]; } return a; };
+  for (let t = 0; t < idx.length; t += 3) { const a = find(weld[idx[t]]); parent[find(weld[idx[t + 1]])] = a; parent[find(weld[idx[t + 2]])] = a; }
+
+  // boîte englobante de chaque îlot
+  const boxes = new Map();
+  for (let t = 0; t < idx.length; t++) {
+    const i = idx[t], r = find(weld[i]);
+    let b = boxes.get(r);
+    if (!b) boxes.set(r, (b = new THREE.Box3()));
+    b.expandByPoint(v.set(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]));
+  }
+  const inWing = new Set([...boxes].filter(([, b]) => WING_ZONE.containsBox(b)).map(([r]) => r));
+  const rest = [], wingIdx = [], bounds = new THREE.Box3();
+  for (let t = 0; t < idx.length; t += 3) {
+    const r = find(weld[idx[t]]);
+    (inWing.has(r) ? wingIdx : rest).push(idx[t], idx[t + 1], idx[t + 2]);
+    if (inWing.has(r)) bounds.union(boxes.get(r));
+  }
+  if (wingIdx.length < 300) return fallback; // rien de plausible : on laisse la carrosserie intacte
+
+  const Arr = idx.constructor;
+  const wg = new THREE.BufferGeometry();
+  for (const [name, attr] of Object.entries(g.attributes)) wg.setAttribute(name, attr);
+  wg.setIndex(new THREE.BufferAttribute(new Arr(wingIdx), 1));
+  wg.boundingBox = g.boundingBox; wg.boundingSphere = g.boundingSphere ?? null;
+  if (!wg.boundingSphere) wg.computeBoundingSphere();
+  g.setIndex(new THREE.BufferAttribute(new Arr(rest), 1));
+
+  const mesh = new THREE.Mesh(wg, body.material);
+  mesh.name = 'ActiveWing';
+  body.parent.add(mesh);
+  mesh.matrix.copy(body.matrix); mesh.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
+  const pivot = new THREE.Group();
+  pivot.position.set(bounds.max.x, (bounds.min.y + bounds.max.y) / 2, 0); // bord d'attaque (côté avant)
+  car.add(pivot);
+  car.updateMatrixWorld(true);
+  pivot.attach(mesh);
+  const y0 = pivot.position.y;
+  return {
+    center: bounds.getCenter(new THREE.Vector3()).setY(bounds.max.y),
+    set(k) { pivot.position.y = y0 + WING_LIFT * k; pivot.rotation.z = -WING_TILT * k; },
+  };
 }
 
 /**

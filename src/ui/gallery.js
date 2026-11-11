@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import * as THREE from 'three';
-import { GALLERY, HOTSPOTS, ORBIT, camOf, clipOf } from '../config/screens.js';
+import { GALLERY, HOTSPOTS, DEFAULT_SPOT, SPOT_ANCHOR, LIVERIES, ORBIT, camOf, clipOf } from '../config/screens.js';
+import { MOBILE } from '../config/device.js';
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
@@ -9,7 +10,9 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
  *  - le glisser fait tourner la caméra tout autour de la voiture (élévation et zoom bornés), avec inertie ;
  *  - les miniatures sont des raccourcis : la caméra vole vers le cadrage voulu, puis reste libre ;
  *  - les repères (points blancs) sont projetés à chaque image et n'apparaissent que s'ils sont dans le champ
- *    et tournés vers la caméra ; un clic sur une roue mène à l'état « Détails » (cadrage découpé + fiche).
+ *    et tournés vers la caméra ; un clic sur un repère mène à l'état « Détails » (cadrage découpé sur ce repère + sa fiche ;
+ *    la fiche de l'aileron le déploie) ;
+ *  - les pastilles de livrée changent la teinte et les bandes de la carrosserie (retour à la teinte de série en quittant la galerie).
  */
 export function createGallery({ root, rig, carApi, setClip, stage }) {
   const states = GALLERY.map((g) => rig.toState(camOf(g)));
@@ -26,6 +29,59 @@ export function createGallery({ root, rig, carApi, setClip, stage }) {
   const eyebrowDetail = root.querySelector('#g-eyebrow-detail');
   const hint = root.querySelector('#g-hint');
   const hotspots = []; // { def, p, n, el }
+  const cardTitle = root.querySelector('.card h3'), cardText = root.querySelector('.card p');
+  const liveriesEl = root.querySelector('#liveries');
+
+  // ---------- fiche d'un repère : cadrage centré sur le repère + contenu de la fiche ----------
+  function showSpot(h) {
+    const { cam: c, mdist } = h.def.info;
+    states[DETAIL] = rig.toState({ ...c, dist: MOBILE ? mdist ?? c.dist : c.dist, pivot: [h.p.x, h.p.y, h.p.z], anchor: MOBILE ? SPOT_ANCHOR.mobile : SPOT_ANCHOR.desktop });
+    cardTitle.innerHTML = h.def.info.title;
+    cardText.textContent = h.def.info.text;
+  }
+
+  // ---------- aileron actif ----------
+  const wingObj = { k: 0 };
+  let wingTween = null;
+  function setWing(to, delay = 0) {
+    wingTween?.kill();
+    if (wingObj.k === to) return;
+    wingTween = gsap.to(wingObj, { k: to, delay, duration: to ? 1.1 : 0.6, ease: 'power2.inOut', onUpdate: () => { carApi.setWing(wingObj.k); stage.invalidate(); } });
+  }
+
+  // ---------- livrées ----------
+  const liv = { index: 0, k: 0, color: carApi.basePaint.clone(), tl: null };
+  const livColor = (i) => (LIVERIES[i].color ? new THREE.Color(LIVERIES[i].color) : carApi.basePaint.clone());
+  const pushLivery = () => { carApi.setLivery({ color: liv.color, k: liv.k }); stage.invalidate(); };
+  function setLivery(i, { instant = false } = {}) {
+    if (i === liv.index && !liv.tl) return;
+    liv.index = i;
+    const L = LIVERIES[i], to = livColor(i), from = liv.color.clone(), o = { t: 0 };
+    liv.tl?.kill();
+    liveriesEl?.querySelectorAll('.liv').forEach((b, k) => b.setAttribute('aria-checked', String(k === i)));
+    if (liveriesEl) { liveriesEl.querySelector('.liv-name').textContent = L.name; liveriesEl.querySelector('.liv-note').textContent = L.note; }
+    const swap = () => { if (L.stripe) carApi.setLivery({ stripe: new THREE.Color(L.stripe), band: L.band }); };
+    if (instant) { liv.tl = null; swap(); liv.color.copy(to); liv.k = L.stripe ? 1 : 0; pushLivery(); return; }
+    liv.tl = gsap.timeline({ onComplete: () => { liv.tl = null; } })
+      .to(liv, { k: 0, duration: liv.k > 0 ? 0.25 : 0, ease: 'power1.in', onUpdate: pushLivery })      // les anciennes bandes s'effacent
+      .add(swap)
+      .to(o, { t: 1, duration: 0.55, ease: 'power2.inOut', onUpdate: () => { liv.color.copy(from).lerp(to, o.t); pushLivery(); } })
+      .to(liv, { k: L.stripe ? 1 : 0, duration: L.stripe ? 0.45 : 0, ease: 'power2.out', onUpdate: pushLivery }, '-=0.2');
+  }
+  function buildLiveries() {
+    if (!liveriesEl) return;
+    const row = liveriesEl.querySelector('.liv-row');
+    LIVERIES.forEach((L, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'liv'; b.dataset.liv = String(i);
+      b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', String(i === 0)); b.setAttribute('aria-label', L.name);
+      b.style.setProperty('--c', L.swatch ?? L.color);
+      b.style.setProperty('--s', L.stripe ?? L.swatch ?? L.color);
+      row.appendChild(b);
+    });
+    liveriesEl.querySelector('.liv-name').textContent = LIVERIES[0].name;
+    liveriesEl.querySelector('.liv-note').textContent = LIVERIES[0].note;
+  }
 
   // ---------- repères : position + normale, boutons générés ----------
   function buildHotspots() {
@@ -43,7 +99,6 @@ export function createGallery({ root, rig, carApi, setClip, stage }) {
       el.dataset.id = def.id;
       el.setAttribute('aria-label', def.label);
       el.innerHTML = `<span class="ring"></span><span class="hs-label ts-gt-legendes-petite">${def.label}</span>`;
-      if (def.detail) el.dataset.detail = '1';
       layer.appendChild(el);
       hotspots.push({ def, p, n: new THREE.Vector3(...def.normal).normalize(), el });
     }
@@ -97,14 +152,18 @@ export function createGallery({ root, rig, carApi, setClip, stage }) {
     }
     if (eyebrowDefault) { eyebrowDefault.hidden = detail; eyebrowDetail.hidden = !detail; }
     if (hint) hint.hidden = detail;
+    if (liveriesEl) liveriesEl.hidden = detail;
     document.body.classList.toggle('is-orbit', active && !detail);
   }
 
   // ---------- sélection d'un cadrage (miniatures, « Vue d'ensemble », clic sur une roue) ----------
-  function select(i, { instant = false } = {}) {
+  function select(i, { instant = false, spot = null } = {}) {
     if (i === index && !instant && !tween && thumbs[i].getAttribute('aria-selected') === 'true') return;
     const prev = index;
     index = i;
+    const h = i === DETAIL ? spot ?? hotspots.find((x) => x.def.id === DEFAULT_SPOT) ?? hotspots[0] : null;
+    if (h) showSpot(h);
+    setWing(h?.def.info.wing ? 1 : 0, h?.def.info.wing && !instant ? 1.0 : 0);   // l'aileron se lève une fois la caméra presque arrivée
     thumbs.forEach((t, k) => t.setAttribute('aria-selected', String(k === i)));
     tween?.kill();
     Object.values(groups).forEach((g) => g.classList.remove('is-on'));
@@ -191,7 +250,11 @@ export function createGallery({ root, rig, carApi, setClip, stage }) {
     if (!active) return;
     const b = e.target.closest('[data-g-go]');
     if (b) { select(parseInt(b.dataset.gGo, 10)); return; }
-    if (e.target.closest('.hotspot[data-detail]') && DETAIL >= 0) select(DETAIL);
+    const lv = e.target.closest('[data-liv]');
+    if (lv) { setLivery(parseInt(lv.dataset.liv, 10)); return; }
+    const hs = e.target.closest('.hotspot');
+    const h = hs && hotspots.find((x) => x.el === hs);
+    if (h?.def.info && DETAIL >= 0) select(DETAIL, { spot: h });
   });
   window.addEventListener('keydown', (e) => {
     if (!active) return;
@@ -204,10 +267,10 @@ export function createGallery({ root, rig, carApi, setClip, stage }) {
     cam,
     get index() { return index; },
     get canOrbit() { return canOrbit(); },
-    init() { buildHotspots(); renderThumbs(); },
+    init() { buildHotspots(); buildLiveries(); renderThumbs(); },
     /** Appelé quand l'écran Galerie devient l'écran actif (caméra arrêtée). */
     enter() { active = true; dragged = false; showState(index); },
-    leave() { active = false; Object.values(groups).forEach((g) => g.classList.remove('is-on')); document.body.classList.remove('is-orbit', 'is-dragging'); pointers.clear(); },
+    leave() { active = false; setWing(0); setLivery(0); Object.values(groups).forEach((g) => g.classList.remove('is-on')); document.body.classList.remove('is-orbit', 'is-dragging'); pointers.clear(); },
     reset,
     select,
     /** Appelé à chaque image tant que la galerie est affichée : inertie + repères. */

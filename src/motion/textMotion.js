@@ -23,7 +23,8 @@ const align = (el) => {
   return 'l';
 };
 
-const fmt = (v, dec) => v.toFixed(dec).replace('.', ',');
+// Virgule décimale et espace fine insécable pour les milliers (« 1 350 »)
+const fmt = (v, dec) => v.toFixed(dec).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
 
 // Valeur finale de chaque compteur, mémorisée une fois pour toutes (sinon une animation interrompue
 // laisserait une valeur intermédiaire dans le DOM, relue ensuite comme « valeur finale »).

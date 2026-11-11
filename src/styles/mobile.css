@@ -148,3 +148,24 @@ html.m .sources-list li { padding: 12px 0; }
   html.m .eds { gap: calc(10 * var(--u)) calc(16 * var(--u)); }
   html.m .ed .ts-gt-legendes-petite { font-size: calc(11.5 * var(--u)); }
 }
+
+/* ---------- Frise : mêmes barres qu'au bureau, non cliquables (trop fines au doigt, le menu sert aux sauts) ---------- */
+html.m #frise { left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: calc(62 * var(--u)); gap: calc(4 * var(--u)); pointer-events: none; z-index: 1; }
+html.m #frise a { height: 2px; }
+
+/* Écran 06 : total de production */
+html.m .num-production { font-size: calc(60 * var(--u)); }
+
+/* Galerie → épilogue, épilogue */
+html.m #layer-front [data-s='10'] #g-next { position: absolute; top: calc(80 * var(--u)); right: calc(20 * var(--u)); left: auto; width: auto; min-height: 40px; display: flex; align-items: center; gap: calc(6 * var(--u)); font-size: calc(14 * var(--u)); }
+html.m .fin-actions { flex-direction: column; align-items: flex-start; gap: calc(6 * var(--u)); }
+html.m .fin-actions a { font-size: calc(15 * var(--u)); min-height: 40px; display: flex; align-items: center; gap: calc(6 * var(--u)); border-bottom: 0; padding: 0; text-decoration: underline; text-underline-offset: 4px; }
+html.m [data-s='11'] .pos { text-align: center; }
+html.m [data-s='11'] .fin-actions { align-items: center; }
+
+/* Galerie : livrées sous le titre, alignées à gauche */
+html.m #layer-front [data-s='10'] #liveries { position: absolute; left: calc(20 * var(--u)); right: calc(20 * var(--u)); top: calc(150 * var(--u)); text-align: left; }
+html.m .liv-row { justify-content: flex-start; gap: calc(16 * var(--u)); }
+html.m .liv { width: calc(28 * var(--u)); height: calc(28 * var(--u)); }
+html.m .liv-name { font-size: calc(14 * var(--u)); margin-top: calc(12 * var(--u)); }
+html.m .liv-note { margin-left: 0; max-width: calc(300 * var(--u)); }

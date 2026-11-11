@@ -7,8 +7,10 @@ Au centre de la page, un modèle 3D de la Ford GT tourne en temps réel dans une
 ## Ce que le site présente
 
 - **Une introduction cinématique** : les phares s'allument dans le noir, un éclair de lumière révèle la voiture, puis le nom « FORD » et l'année « 2017 » apparaissent.
+- **Une frise de progression** : une barre par écran sous l'en-tête, cliquable sur ordinateur.
 - **Une narration en dix phases** : l'héritage de la marque, le contexte de la voiture, ses choix de conception, ses performances et ses détails techniques, chacun présenté avec son propre cadrage.
-- **Une galerie interactive** : une caméra libre pour observer la voiture sous tous les angles, avec des repères cliquables sur les éléments clés (roues, phares, ailes, échappement). Un clic sur une roue ouvre une fiche de détails.
+- **Une galerie interactive** : une caméra libre pour observer la voiture sous tous les angles, avec des repères cliquables sur les éléments clés (roues, phares, arches, aileron, échappements). Chaque repère ouvre sa fiche ; celle de l'aileron le déploie. Quatre livrées au choix : la teinte de série et trois Heritage Edition ('66, '67, '68 Gulf).
+- **Un épilogue** : retour au noir, phares allumés, avec les liens de fin (revoir l'intro, sources, portfolio).
 - **Une typographie et des chiffres animés** : les grandes valeurs (puissance, vitesse, années) se comptent progressivement lorsqu'elles entrent à l'écran.
 
 ## Pour qui
