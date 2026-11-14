@@ -8,9 +8,32 @@
   <meta name="theme-color" content="#3366b4" />
   <link rel="preload" href="./models/ford-gt.glb" as="fetch" crossorigin />
   <link rel="icon" href="./img/ford-logo.png" />
+  <!-- Loader : styles inline (valeurs en dur) pour qu'il soit peint dès le premier rendu, sans attendre le JS ni les feuilles de style du bundle. -->
+  <style>
+    #loader { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; background: #3366b4; color: #fff; font: 500 13px/1.4 Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+    #loader img { display: block; width: 96px; height: auto; }
+    #loader .bar { position: relative; width: min(220px, 56vw); height: 2px; overflow: hidden; background: rgba(255, 255, 255, 0.25); }
+    #loader .bar::before { content: ''; position: absolute; inset: 0; background: #fff; transform-origin: left center; transform: scaleX(var(--p, 0)); transition: transform 0.25s ease-out; }
+    /* Tant qu'aucune progression réelle n'est connue : barre indéterminée. */
+    #loader:not(.has-progress) .bar::before { width: 40%; transform: none; animation: loader-slide 1.2s ease-in-out infinite; }
+    #loader .msg { min-height: 1.4em; opacity: 0.8; }
+    #loader.is-error .bar { display: none; }
+    body:not(.is-loading) #loader { opacity: 0; visibility: hidden; pointer-events: none; }
+    @keyframes loader-slide { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+    @media (prefers-reduced-motion: reduce) {
+      #loader:not(.has-progress) .bar::before { animation: none; width: 100%; opacity: 0.6; }
+      #loader, #loader .bar::before { transition: none; }
+    }
+  </style>
+  <noscript><style>#loader { display: none; }</style></noscript>
   <script type="module" src="/src/main.js"></script>
 </head>
 <body class="is-loading">
+  <div id="loader" role="status" aria-live="polite">
+    <img src="./img/ford-logo.png" alt="Ford" width="96" height="54" />
+    <div class="bar" aria-hidden="true"></div>
+    <div class="msg">Chargement</div>
+  </div>
   <h1 class="sr-only">Ford GT 2017 — l’histoire d’une légende</h1>
 
   <!-- ===================== CALQUE ARRIÈRE : grands mots derrière la voiture ===================== -->
